@@ -78,8 +78,6 @@ if (isset($_POST['userEmail'])) {
                     </div>
                 </form>
             </div>
-            </br>
-            <a href="" id="forget_pw">Forgot Password?</a>
         </div>
     </div>
 </body>
