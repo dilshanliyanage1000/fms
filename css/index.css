@@ -1,0 +1,45 @@
+#login_body {
+    background-image: url("../img/login.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+#login_form {
+    background-color: rgb(236, 236, 236);
+    text-align: center;
+    margin-top: 10%;    
+    margin-right: 15%;
+    margin-left: 15%;    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    border-radius: 20px;
+}
+
+#text_group {
+    text-align: center;
+    margin-right: 20%;
+    margin-left: 20%;
+}
+
+#mainBodyImage {
+    width: 80%;
+}
+
+#forget_pw, 
+#create_acc {
+    text-decoration: none;
+    font-size: 20px;
+}
+
+#footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(0, 0, 0);
+    opacity: 0.5;
+    text-align: center;
+    padding: 5px;
+}

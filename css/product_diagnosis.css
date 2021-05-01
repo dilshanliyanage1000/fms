@@ -1,0 +1,42 @@
+#wrapper {
+    box-sizing: border-box;
+    display: flex;
+}
+
+.card {
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+#image-set-scroll-section {
+    
+    overflow-y: scroll;
+    flex: 1;
+    height: 550px;
+    width: 100%;
+    border: 2px solid #ccc;
+}
+
+#loaded-images-scroll-section {
+    overflow-y: scroll;
+    flex: 1;
+    height: 550px;
+    width: 100%;
+    border: 2px solid #ccc;
+}
+
+.loaded-img-set {
+    width: 100%;
+}
+
+.selected-image {
+    border: 2px solid #ccc;
+    height: 550px;
+    width: 100%;
+    background-color: #fff;
+    text-align: center;
+}
+
+#main-image {
+    height: 100%;
+}
