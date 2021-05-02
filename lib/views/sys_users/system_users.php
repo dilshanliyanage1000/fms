@@ -4,9 +4,7 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2)) {
 
 ?>
     <br>
@@ -142,7 +140,8 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
             <table id="allUsers" class="table table-hover table-inverse table-responsive table-bordered">
                 <thead class="thead-inverse">
                     <tr>
-                        <th style="min-width: 100px;">User ID</th>
+                        <th style="min-width: 80px;">User ID</th>
+                        <th style="min-width: 100px;">Employee ID</th>
                         <th style="min-width: 100px;">First Name </th>
                         <th style="min-width: 100px;">Last Name </th>
                         <th>Email </th>
@@ -176,19 +175,13 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                 <div class="modal-body">
                     <form id="editform">
                         <div class="row form-group">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label>User Login ID</label>
                                 <input type="text" name="userID" id="userID" class="form-control" disabled>
                             </div>
-                        </div>
-                        <div class="row form-group">
                             <div class="col-md-6">
                                 <label>Employee ID</label>
                                 <input type="text" name="employeeID" id="employeeID" class="form-control" disabled>
-                            </div>
-                            <div class="col-md-6">
-                                <label>Employee Email</label>
-                                <input type="text" name="employeeEmail" id="employeeEmail" class="form-control" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -199,6 +192,24 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                             <div class="col-md-6">
                                 <label>Last Name</label>
                                 <input type="text" name="employeeLName" id="employeeLName" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-6">
+                                <label>Employee Email</label>
+                                <input type="text" name="employeeEmail" id="employeeEmail" class="form-control" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <h6 for="jobeditrole">Login User Role</h6>
+                                    <select class="custom-select" name="jobeditrole" id="jobeditrole" required>
+                                        <option selected="">--Select job role--</option>
+                                        <option value="1">Admin</option>
+                                        <option value="2">Manager</option>
+                                        <option value="3">Supervisor</option>
+                                        <option value="4">In-office Employee</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <hr class="display-4">
@@ -387,34 +398,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                 }
             });
 
-            // $("#password_one").keyup(function() {
-            //     var pw1 = $(this).val();
 
-            //     if (pw1.length < 8) {
-            //         document.getElementById("password_two").disabled = true;
-            //         $("#pw_info").show();
-
-            //     } else {
-
-            //         $("#pw_info").hide();
-            //         document.getElementById("password_two").disabled = false;
-
-            //         $("#password_two").keyup(function() {
-            //             var pw2 = $(this).val();
-
-            //             if (pw1 == pw2) {
-            //                 $("#pw_match").show();
-            //                 $("#pw_differs").hide();
-            //                 $("#btnSave").show();
-            //             } else {
-            //                 $("#pw_match").hide();
-            //                 $("#pw_differs").show();
-            //                 $("#btnSave").hide();
-            //             }
-            //         });
-            //     }
-
-            // });
 
             $("#OnePassword").keyup(function() {
                 var pw1 = $(this).val();
@@ -459,20 +443,15 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
             $("#btnSave").click(function() {
 
                 $empID = $("#sel_emp_id").html();
-                $fname = $("#usr_fname").val();
-                $lname = $("#usr_lname").val();
-                $email = $("#username").val();
-                $role = $("#job_role").val();
+                $jobrole = $("#job_role").val();
                 $password = $("#password_one").val();
+                $passwordtwo = $("#password_two").val();
 
                 $.post("../../route/login/newUserLogin.php", {
-                    emp_id: $empID,
-                    f_name: $fname,
-                    l_name: $lname,
-                    email: $email,
-                    role: $role,
+                    empID: $empID,
+                    jobrole: $jobrole,
                     password: $password,
-
+                    passwordtwo: $passwordtwo
                 }, function(data) {
 
                     if (data == "success") {
@@ -485,10 +464,6 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                             text: 'New system user has been created succesfully!',
                             showConfirmButton: false,
                             timer: 2000
-                        }).then((result) => {
-                            if (result.dismiss === Swal.DismissReason.timer) {
-                                $("#new_reminder").modal("hide");
-                            }
                         });
                     } else {
                         swal("Check your inputs!", "Kindly check whether all the mandatory fields have been filled out", "warning");
@@ -511,6 +486,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                     $("#employeeEmail").val(jdata.emp_email);
                     $("#employeeFName").val(jdata.emp_fname);
                     $("#employeeLName").val(jdata.emp_lname);
+                    $("#jobeditrole").val(jdata.user_role);
                 });
             });
 

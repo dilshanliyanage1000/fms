@@ -47,7 +47,7 @@ function Auth($userEmail, $pwd)
                 }
 
                 if ($rec['user_role'] == 4) {
-                    header("location:lib/views/dashboard/inoffice_emp.php");
+                    header("location:lib/views/dashboard/inoffice.php");
                 }
             } else {
                 echo ("Your account has been deactivated.. Please contact Administrator!");
@@ -65,7 +65,7 @@ function SearchUser($search)
     // call the connection
     $conn = Connection();
 
-    $searchSql = "SELECT * FROM emp_tbl INNER JOIN user_tbl ON emp_tbl.emp_id = user_tbl.emp_id WHERE emp_tbl.emp_email LIKE '%$search%';";
+    $searchSql = "SELECT * FROM emp_tbl INNER JOIN user_tbl ON emp_tbl.emp_id = user_tbl.emp_id WHERE emp_tbl.emp_email = '$search';";
 
     $searchQuery = mysqli_query($conn, $searchSql);
 

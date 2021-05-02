@@ -86,8 +86,9 @@ foreach ($tbl as $row) {
                     <td style="width:20%; text-align:right;">Inital Stock Value</td>
                     <td style="width:15%; text-align:left;">:&nbsp;' . $initialRMStock . '&nbsp;Kg(s)</td>';
 
-  $rmunitprice  = $row->rmUnitPrice;
-  $unpriceonly  = explode(" ", $rmunitprice)[1];
+  $rmunitprice    = $row->rmUnitPrice;
+  $unpriceonly    = explode(" ", $rmunitprice)[1];
+  $unpriceonly    = explode(".", $rmunitprice)[0];
   $unpriceonly_d  = number_format($unpriceonly);
 
   $rmqty        = $row->rmQty;
@@ -95,7 +96,8 @@ foreach ($tbl as $row) {
 
   $rmtotalprice = $row->rmTotalPrice;
   $totpriceonly   = explode(" ", $rmtotalprice)[1];
-  $totpriceonly_d   = number_format($totpriceonly);
+  $totpriceonly   = explode(".", $rmtotalprice)[0];
+  $totpriceonly_d = number_format($totpriceonly);
 
   $addItems = addGRNItems($GrnID, $rmid, $rmname, $unpriceonly, $rmqty, $totpriceonly);
 
@@ -215,6 +217,6 @@ $pdf_string = $obj_pdf->Output('' . $pdfname . '.pdf', 'S');
 
 file_put_contents('../../docs/goodsrecievednote/' . $pdfname . '.pdf', $pdf_string);
 
-echo "<script>window.close();</script>";
+//echo "<script>window.close();</script>";
 
 ?>

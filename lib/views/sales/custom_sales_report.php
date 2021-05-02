@@ -231,3 +231,5 @@ $content .= '</div>';
 $obj_pdf->writeHTML($content);
 
 $obj_pdf->Output('Customized Sales Report.pdf', 'I');
+
+?>

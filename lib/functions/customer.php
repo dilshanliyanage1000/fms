@@ -131,7 +131,7 @@ function ViewCustomer()
 {
     $conn = Connection();
 
-    $view_sql = "SELECT * FROM cus_tbl ORDER BY cus_id DESC;";
+    $view_sql = "SELECT * FROM cus_tbl WHERE cus_status = 1 ORDER BY cus_id DESC;";
 
     $view_result = mysqli_query($conn, $view_sql);
 
@@ -170,6 +170,48 @@ function ViewCustomer()
     }
 }
 
+function DeletedCustomer()
+{
+    $conn = Connection();
+
+    $view_sql = "SELECT * FROM cus_tbl WHERE cus_status = 0 ORDER BY cus_id DESC;";
+
+    $view_result = mysqli_query($conn, $view_sql);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    //check no of records
+    $nor = mysqli_num_rows($view_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($view_result)) {
+
+            echo ("<td>" . $rec['cus_id'] . "</td>");
+            echo ("<td>" . $rec['cus_first_name'] . "</td>");
+            echo ("<td>" . $rec['cus_last_name'] . "</td>");
+            echo ("<td>" . $rec['cus_email'] . "</td>");
+            echo ("<td>(" . $rec['cus_code_phoneone'] . ") " . $rec['cus_phone_one'] . "</td>");
+            echo ("<td>(" . $rec['cus_code_phonetwo'] . ") " . $rec['cus_phone_two'] . "</td>");
+            echo ("<td>" . $rec['cus_houseno'] . ", " . $rec['cus_street_one'] . ", " . $rec['cus_street_two'] . ", " . $rec['cus_city'] . ". " . $rec['cus_postal_code'] . "</td>");
+
+            if ($rec['cus_status'] == 1) {
+                echo ("<td><span class='badge badge-pill badge-primary'>Active</span></td>");
+            } else {
+                echo ("<td><span class='badge badge-pill badge-danger'>Deactive</span></td>");
+            }
+
+            echo ("<td style='text-align:center;'><button id=" . $rec['cus_id'] . " class='btn btn-secondary btn-reactivate btn-sm'><i class='fas fa-sync'></i>&nbsp;Reactivate</button></td>");
+            echo ("</tr>");
+        }
+    } else {
+        return (" No record found");
+    }
+}
+
 //update the customer status from 1 to 0
 function delCustomer($cusId)
 {
@@ -178,6 +220,29 @@ function delCustomer($cusId)
 
     //update sql
     $sql_update = "UPDATE cus_tbl SET cus_status = 0 WHERE cus_id = '$cusId';";
+
+    $update_result = mysqli_query($conn, $sql_update);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    if ($update_result == 1) {
+        return ("success");
+    } else {
+        return false;
+    }
+}
+
+//update the customer status from 1 to 0
+function reactivateCustomer($cusId)
+{
+    //connection
+    $conn = Connection();
+
+    //update sql
+    $sql_update = "UPDATE cus_tbl SET cus_status = 1 WHERE cus_id = '$cusId';";
 
     $update_result = mysqli_query($conn, $sql_update);
 
@@ -217,10 +282,9 @@ function verifyMail($search)
 
 function getsingleCus($id)
 {
-
     $conn = Connection();
 
-    $sql_select = "SELECT * FROM cus_tbl WHERE cus_id='$id';";
+    $sql_select = "SELECT * FROM cus_tbl WHERE cus_id = '$id';";
     $sql_result = mysqli_query($conn, $sql_select);
 
     //validate the command
@@ -244,7 +308,7 @@ function getRecentlyAddedCust()
 
     $conn = Connection();
 
-    $prev_id = "SELECT cus_id FROM cus_tbl ORDER BY cus_id DESC limit 1;";
+    $prev_id = "SELECT cus_id FROM cus_tbl WHERE cus_status = 1 ORDER BY cus_id DESC limit 1;";
 
     $result = mysqli_query($conn, $prev_id);
 
@@ -256,7 +320,7 @@ function getRecentlyAddedCust()
     if (mysqli_num_rows($result) > 0) {
 
         $rec = mysqli_fetch_assoc($result);
-        
+
         $lid = $rec["cus_id"];
 
         return ($lid);
@@ -264,5 +328,3 @@ function getRecentlyAddedCust()
         return false;
     }
 };
-
-?>

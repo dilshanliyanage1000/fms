@@ -3,9 +3,7 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 3)) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2 || $_SESSION['user_role'] == 3)) {
 
 ?>
 
@@ -16,6 +14,10 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
 
         #zoom:hover {
             transform: scale(1.5);
+        }
+
+        .cancel {
+            background-color: #FFCE67;
         }
     </style>
 
@@ -170,29 +172,66 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
         <div class="jumbotron">
             <h1 class="display-5" style="text-align: center;"><i class="fas fa-box fa-1x"></i>&nbsp;&nbsp;Product List</h1>
             <br><br>
-            <table class="table table-hover table-inverse table-responsive table-bordered" id="product_list">
-                <thead>
-                    <tr>
-                        <th>Item Code</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>P.Capacity</th>
-                        <th>Motor</th>
-                        <th>Current</th>
-                        <th>Price</th>
-                        <th>R/Level</th>
-                        <th style="min-width: 40px;">QR</th>
-                        <th style="min-width: 40px;">Edit</th>
-                        <th style="min-width: 40px;">Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    include_once("../../functions/product.php");
-                    ViewProduct();
-                    ?>
-                </tbody>
-            </table>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#allProductsList">All Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#deletedProductsList">Deleted Products</a>
+                </li>
+            </ul>
+            <br>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade show active" id="allProductsList">
+                    <table class="table table-hover table-inverse table-responsive table-bordered" id="product_list">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>P.Capacity</th>
+                                <th>Motor</th>
+                                <th>Current</th>
+                                <th>Price</th>
+                                <th>R/Level</th>
+                                <th style="min-width: 40px;">QR</th>
+                                <th style="min-width: 40px;">Edit</th>
+                                <th style="min-width: 40px;">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            include_once("../../functions/product.php");
+                            ViewProduct();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="deletedProductsList">
+                    <table class="table table-hover table-inverse table-responsive table-bordered" id="deleted_product_list">
+                        <thead>
+                            <tr>
+                                <th style="min-width: 80px;">Code</th>
+                                <th style="min-width: 40px;">Image</th>
+                                <th style="min-width: 250px;">Name</th>
+                                <th style="min-width: 40px;">P.Capacity</th>
+                                <th style="min-width: 40px;">Motor</th>
+                                <th style="min-width: 80px;">Current</th>
+                                <th style="min-width: 100px;">Price</th>
+                                <th style="min-width: 80px;">R/Level</th>
+                                <th style="min-width: 40px;">QR</th>
+                                <th style="min-width: 100px;">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            include_once("../../functions/product.php");
+                            deletedProducts();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -339,49 +378,11 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
     <script>
         $(document).ready(function() {
 
-            $("#btnSave").click(function() {
-
-                var form = $('#saveProd')[0];
-                var formData = new FormData(form);
-
-                $.ajax({
-                    url: "../../route/product/newproduct.php",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    type: 'POST',
-                    success: function(data) {
-
-                        if (data == "Success") {
-                            setTimeout(() => {
-                                location.reload();
-                            }, 2700);
-                            swal({
-                                type: 'success',
-                                title: 'New Product added!',
-                                text: 'New Product has been successfully registered',
-                                showConfirmButton: false,
-                                timer: 2500
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
-                            });
-                        } else if (data == "ext_error") {
-
-                            swal("Image Error!", "You can only upload either .PNG, .JPG or .GIF images!", "warning");
-
-                        } else {
-
-                            swal("Check your inputs!", "Kindly check whether all the mandatory fields have been filled out", "warning");
-                        }
-                    }
-                })
-            });
-
             $("#product_list").DataTable({
                 dom: 'B<"clear">lfrtip',
-                "order": [[ 2, "asc" ]],
+                "order": [
+                    [2, "asc"]
+                ],
                 buttons: [{
                         extend: 'copyHtml5',
                         text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',
@@ -416,6 +417,81 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                 ]
             });
 
+            $("#deleted_product_list").DataTable({
+                dom: 'B<"clear">lfrtip',
+                "order": [
+                    [2, "asc"]
+                ],
+                buttons: [{
+                        extend: 'copyHtml5',
+                        text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>&nbsp;Export to Excel',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                        },
+                        title: "Udaya Industries [REPORT: PRODUCT LIST]"
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fas fa-file-csv"></i>&nbsp;Export to CSV',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                        },
+                        title: "Udaya Industries [REPORT: PRODUCT LIST]"
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i>&nbsp;Export to PDF',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                        },
+                        title: "Udaya Industries [REPORT: PRODUCT LIST]"
+                    }
+                ]
+            });
+
+            $("#btnSave").click(function() {
+
+                var form = $('#saveProd')[0];
+                var formData = new FormData(form);
+
+                $.ajax({
+                    url: "../../route/product/newproduct.php",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    success: function(data) {
+                        if (data == "Success") {
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2050);
+                            swal({
+                                type: 'success',
+                                title: 'New Product added!',
+                                text: 'New Product has been successfully registered',
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+                        } else if (data == "ext_error") {
+
+                            swal("Image Error!", "You can only upload either .PNG, .JPG or .GIF images!", "warning");
+
+                        } else {
+
+                            swal("Check your inputs!", "Kindly check whether all the mandatory fields have been filled out", "warning");
+                        }
+                    }
+                })
+            });
+
+
             $('#product_list tbody').on('click', '.btn-primary', function() {
 
                 $id = $(this).attr("id");
@@ -440,7 +516,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                     $("#ed_reorderlevel").val(jdata.prod_reorder_level);
 
                     $('#prod_pic').attr("style", "width:40%");
-                    $('#prod_pic').attr("src", '../../' + imgdbpath + '');
+                    $('#prod_pic').attr("src", imgdbpath);
                 })
             });
 
@@ -463,17 +539,13 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         if (data == "success") {
                             setTimeout(() => {
                                 location.reload();
-                            }, 2600);
+                            }, 2050);
                             swal({
                                 type: 'success',
                                 title: 'Product Updated!',
                                 text: 'Product details has been updated successfully!',
                                 showConfirmButton: false,
                                 timer: 2500
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
                             });
                         } else if (data == "ext_error") {
 
@@ -488,7 +560,6 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
             });
 
             $('#product_list tbody').on('click', '.btn-info', function() {
-
                 this.click;
                 var prodID = $(this).attr('id');
                 window.open("productqr.php?code=" + prodID);
@@ -525,10 +596,6 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                                         text: 'Product details succesfully deleted!',
                                         showConfirmButton: false,
                                         timer: 2000
-                                    }).then((result) => {
-                                        if (result.dismiss === Swal.DismissReason.timer) {
-                                            $("#new_reminder").modal("hide");
-                                        }
                                     });
                                 }
                             });
@@ -539,14 +606,57 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                                 text: 'Customer details remain!',
                                 showConfirmButton: false,
                                 timer: 2000
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
                             });
                         }
                     });
             });
+
+            $('#deleted_product_list tbody').on('click', '.btn-reactivate', function() {
+
+                this.click;
+
+                $trID = $(this).attr('id');
+
+                swal({
+                        title: "Reactivate Product : " + $trID + "?",
+                        text: "You will restore " + $trID + "'s data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Delete",
+                        confirmButtonColor: "#000000",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.get("../../route/product/reactivateProduct.php", {
+                                id: $trID
+                            }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
+                                swal({
+                                    type: 'success',
+                                    title: 'Product Reactivated!',
+                                    text: 'Product details succesfully restored!',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            });
+                        } else {
+                            swal({
+                                type: 'warning',
+                                title: 'Cancelled!',
+                                text: 'Product details remain deleted!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }
+                    });
+            });
+
         });
 
         $('#product_image').change(function() {

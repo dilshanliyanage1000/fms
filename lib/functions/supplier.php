@@ -50,7 +50,7 @@ function ViewSupplier()
 
     $conn = Connection();
 
-    $view_sql = "SELECT * FROM supplier_tbl ORDER BY sup_id DESC;";
+    $view_sql = "SELECT * FROM supplier_tbl WHERE sup_status = 1 ORDER BY sup_id DESC;";
 
     $view_result = mysqli_query($conn, $view_sql);
 
@@ -81,8 +81,6 @@ function ViewSupplier()
             $rows = mysqli_num_rows($getResult);
 
             $description = '';
-
-            $rowID = '';
 
             if ($rows > 0) {
                 while ($record = mysqli_fetch_assoc($getResult)) {
@@ -115,6 +113,80 @@ function ViewSupplier()
 
             echo ("<td style='text-align:center;'><button id=" . $rec['sup_id'] . " class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editModal'>Edit</button></td>");
             echo ("<td style='text-align:center;'><button id=" . $rec['sup_id'] . " class='btn btn-danger btn-sm'>Delete</button></td>");
+            echo ("</tr>");
+        }
+    } else {
+        return false;
+    }
+}
+
+//view supplier details 
+function ViewDeletedSupplier()
+{
+    $conn = Connection();
+
+    $view_sql = "SELECT * FROM supplier_tbl WHERE sup_status = 0 ORDER BY sup_id DESC;";
+
+    $view_result = mysqli_query($conn, $view_sql);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    //check no of records
+    $nor = mysqli_num_rows($view_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($view_result)) {
+
+            $supID = $rec["sup_id"];
+
+            $getRMSQL = "SELECT supplier_tbl.sup_id, rawmaterial_tbl.rm_name, supplier_tbl.sup_status
+                            FROM ((supplier_rm_tbl
+                            INNER JOIN supplier_tbl
+                            ON supplier_rm_tbl.sup_id = supplier_tbl.sup_id)
+                            INNER JOIN rawmaterial_tbl
+                            ON supplier_rm_tbl.rm_id = rawmaterial_tbl.rm_id)
+                            WHERE supplier_tbl.sup_id = '$supID';";
+
+            $getResult = mysqli_query($conn, $getRMSQL);
+
+            $rows = mysqli_num_rows($getResult);
+
+            $description = '';
+
+            if ($rows > 0) {
+                while ($record = mysqli_fetch_assoc($getResult)) {
+
+                    $description .= $record['rm_name'] . "</br>";
+                }
+            }
+
+            echo ("<td>" . $rec['sup_id'] . "</td>");
+
+            echo ("<td>" . $rec['sup_company_name'] . "</td>");
+
+            echo ("<td>" . $rec['sup_email'] . "</td>");
+
+            if ($rec['sup_fax_number'] == '') {
+                echo ("<td>" . $rec['sup_phone'] . "<br>" . $rec['sup_phone_two'] . "</td>");
+            } else {
+                echo ("<td>" . $rec['sup_phone'] . "<br>" . $rec['sup_phone_two'] . "<br>" . $rec['sup_fax_number'] . "</td>");
+            }
+
+            echo ("<td>" . $rec['sup_address'] . "</td>");
+
+            echo ("<td>" . $description . "</td>");
+
+            if ($rec['sup_status'] == 1) {
+                echo ("<td style='text-align:center;'><span class='badge badge-pill badge-primary'>Active</span></td>");
+            } else {
+                echo ("<td style='text-align:center;'><span class='badge badge-pill badge-danger'>Deactive</span></td>");
+            }
+
+            echo ("<td style='text-align:center;'><button id=" . $rec['sup_id'] . " class='btn btn-secondary btn-reactivate btn-sm'><i class='fas fa-sync'></i>Reactivate</button></td>");
             echo ("</tr>");
         }
     } else {
@@ -194,6 +266,29 @@ function deleteSupplier($supId)
 
     if ($update_result > 0) {
         return ("Deleted");
+    } else {
+        return false;
+    }
+}
+
+//update the supplier status from 1 to 0
+function reactivateSupplier($supId)
+{
+    //connection
+    $conn = Connection();
+
+    //update sql
+    $sql_update = "UPDATE supplier_tbl SET sup_status = 1 WHERE sup_id = '$supId';";
+
+    $update_result = mysqli_query($conn, $sql_update);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    if ($update_result > 0) {
+        return ("reactivated");
     } else {
         return false;
     }

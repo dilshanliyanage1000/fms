@@ -3,11 +3,15 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2 || $_SESSION['user_role'] == 4)) {
 
 ?>
+    <style>
+        .cancel {
+            background-color: #FFCE67;
+        }
+    </style>
+    
     <br>
 
     <div class="col-md-12">
@@ -256,28 +260,64 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
         <div class="jumbotron">
             <h1 class="display-5" style="text-align: center;"><i class="fas fa-truck"></i>&nbsp;&nbsp;Vehicle Information</h1>
             <hr class="my-4">
-            <table id="allVehicles" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th style="width: 100px;">Vehicle ID </th>
-                        <th style="width: 300px;">ENG Number Plate </th>
-                        <th style="width: 300px;">Dash / Sri Plate </th>
-                        <th style="width: 200px;">Brand </th>
-                        <th style="width: 100px;">Model </th>
-                        <th style="width: 100px;">Category </th>
-                        <th style="width: 300px;">Description </th>
-                        <th style="width: 40px;">Status </th>
-                        <th style="width: 40px;">Edit </th>
-                        <th style="width: 40px;">Delete </th>
-                    </tr>
-                </thead>
-                <tbody id="search_body_result">
-                    <?php
-                    include_once('../../functions/vehicle.php');
-                    ViewAllVehicles();
-                    ?>
-                </tbody>
-            </table>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#vehicleList">All Vehicles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#deletedVehicleList">Deleted Vehicles</a>
+                </li>
+            </ul>
+            <br>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade show active" id="vehicleList">
+                    <table id="allVehicles" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th style="width: 100px;">Vehicle ID </th>
+                                <th style="width: 300px;">ENG Number Plate </th>
+                                <th style="width: 300px;">Dash / Sri Plate </th>
+                                <th style="width: 200px;">Brand </th>
+                                <th style="width: 100px;">Model </th>
+                                <th style="width: 100px;">Category </th>
+                                <th style="width: 300px;">Description </th>
+                                <th style="width: 40px;">Status </th>
+                                <th style="width: 40px;">Edit </th>
+                                <th style="width: 40px;">Delete </th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/vehicle.php');
+                            ViewAllVehicles();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="deletedVehicleList">
+                    <table id="allDeletedVehicles" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th style="width: 100px;">Vehicle ID </th>
+                                <th style="width: 300px;">ENG Number Plate </th>
+                                <th style="width: 300px;">Dash / Sri Plate </th>
+                                <th style="width: 200px;">Brand </th>
+                                <th style="width: 100px;">Model </th>
+                                <th style="width: 100px;">Category </th>
+                                <th style="width: 300px;">Description </th>
+                                <th style="width: 40px;">Status </th>
+                                <th style="width: 40px;">Delete </th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/vehicle.php');
+                            ViewDeletedVehicles();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -378,6 +418,9 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
 
             $("#allVehicles").DataTable({
                 dom: 'B<"clear">lfrtip',
+                "order": [
+                    [0, "desc"]
+                ],
                 buttons: [{
                         extend: 'copyHtml5',
                         text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',
@@ -412,6 +455,45 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                 ]
             });
 
+            $("#allDeletedVehicles").DataTable({
+                dom: 'B<"clear">lfrtip',
+                "order": [
+                    [0, "desc"]
+                ],
+                buttons: [{
+                        extend: 'copyHtml5',
+                        text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6]
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>&nbsp;Export to Excel',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED VEHICLE LIST]"
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fas fa-file-csv"></i>&nbsp;Export to CSV',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED VEHICLE LIST]"
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i>&nbsp;Export to PDF',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED VEHICLE LIST]"
+                    }
+                ]
+            });
+
             $("#eng_plate").click(function() {
                 $("#eng_plate_form").show();
                 $("#dash_plate_form").hide();
@@ -430,7 +512,8 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                 $("#sri_plate_form").show();
             })
 
-            $(".btn-primary").click(function() {
+
+            $('#allVehicles tbody').on('click', '.btn-primary', function() {
 
                 $id = $(this).attr('id');
 
@@ -553,7 +636,8 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                 })
             });
 
-            $(".btn-danger").click(function() {
+
+            $('#allVehicles tbody').on('click', '.btn-danger', function() {
 
                 this.click;
                 $trID = $(this).attr('id');
@@ -584,23 +668,60 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                     text: 'Vehicle details succesfully deleted!',
                                     showConfirmButton: false,
                                     timer: 2000
-                                }).then((result) => {
-                                    if (result.dismiss === Swal.DismissReason.timer) {
-                                        $("#new_reminder").modal("hide");
-                                    }
                                 });
                             });
                         } else {
                             swal({
                                 type: 'warning',
                                 title: 'Cancelled!',
-                                text: 'Customer details remain!',
+                                text: 'Vehicle details remain!',
                                 showConfirmButton: false,
                                 timer: 2000
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
+                            });
+                        }
+                    });
+            });
+
+            $('#allDeletedVehicles tbody').on('click', '.btn-reactivate', function() {
+
+                this.click;
+                $trID = $(this).attr('id');
+
+                swal({
+                        title: "Reactivate Vehicle : " + $trID + "?",
+                        text: "You will restore " + $trID + "'s data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Delete",
+                        confirmButtonColor: "#000000",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.get("../../route/vehicle/reactivate_vehicle.php", {
+                                id: $trID
+                            }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
+                                swal({
+                                    type: 'success',
+                                    title: 'Vehicle Reactivated!',
+                                    text: 'Vehicle details succesfully restored!',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            });
+                        } else {
+                            swal({
+                                type: 'warning',
+                                title: 'Cancelled!',
+                                text: 'Vehicle details remain deleted!',
+                                showConfirmButton: false,
+                                timer: 2000
                             });
                         }
                     });
@@ -622,10 +743,6 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                 text: 'New vehicle has been successfully registered',
                                 showConfirmButton: false,
                                 timer: 2000
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
                             });
                         } else {
                             $error_msg = "Kindly check whether all the mandatory fields have been filled out";
@@ -651,10 +768,6 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                 text: 'New vehicle has been successfully registered',
                                 showConfirmButton: false,
                                 timer: 2000
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
                             });
                         } else {
                             $error_msg = "Kindly check whether all the mandatory fields have been filled out";
@@ -680,10 +793,6 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                 text: 'New vehicle has been successfully registered',
                                 showConfirmButton: false,
                                 timer: 2000
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
                             });
                         } else {
                             $error_msg = "Kindly check whether all the mandatory fields have been filled out";

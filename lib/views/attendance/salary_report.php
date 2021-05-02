@@ -6,9 +6,7 @@ date_default_timezone_set('Asia/Colombo');
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2 || $_SESSION['user_role'] == 4)) {
 
 ?>
     <br>

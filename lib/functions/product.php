@@ -55,7 +55,7 @@ function ViewProduct()
 {
     $conn = Connection();
 
-    $view_sql = "SELECT * FROM product_tbl ORDER BY prod_code DESC;";
+    $view_sql = "SELECT * FROM product_tbl WHERE prod_status = 1;";
 
     $view_result = mysqli_query($conn, $view_sql);
 
@@ -96,9 +96,65 @@ function ViewProduct()
 
             echo ("<td style='text-align: right;'>Rs. " . number_format($rec['prod_unit_price']) . ".00</td>");
             echo ("<td style='text-align: center;'>" . $rec['prod_reorder_level'] . " unit(s)</td>");
-            echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-info btn-sm'>QR</button></td>");
-            echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editModal'>Edit</button></td>");
-            echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-danger btn-sm'>Delete</button></td>");
+            echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-info btn-sm btn-block'><i class='fas fa-qrcode'></i>&nbsp;QR</button></td>");
+            echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-primary btn-sm btn-block' data-toggle='modal' data-target='#editModal'>Edit</button></td>");
+            echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-danger btn-sm btn-block'><i class='fas fa-trash'></i>&nbsp;&nbsp;Delete</button></td>");
+
+            echo ("</tr>");
+        }
+    } else {
+        return (" No record found");
+    }
+}
+
+//view product details 
+function deletedProducts()
+{
+    $conn = Connection();
+
+    $view_sql = "SELECT * FROM product_tbl WHERE prod_status = 0;";
+
+    $view_result = mysqli_query($conn, $view_sql);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    //check no of records
+    $nor = mysqli_num_rows($view_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($view_result)) {
+
+            echo ("<td style='text-align: center;'>" . $rec['prod_code'] . "</td>");
+
+            if ($rec['prod_img_path'] == '') {
+                echo ("<td>
+                        <img src='../../../img/noimage.png' alt='No Image' class='responsive' style='height:80px; width:80px; margin-left:1px; margin-bottom:1px; margin-top:1px; margin-right:1px;'>
+                    </td>");
+            } else {
+                echo ("<td>
+                        <img id='zoom' src='" . $rec['prod_img_path'] . "' alt='Product Image' class='responsive' style='height:80px; width:80px; margin-left:1px; margin-bottom:1px; margin-top:1px; margin-right:1px;'>
+                    </td>");
+            }
+
+            echo ("<td>" . $rec['prod_name'] . "</td>");
+            echo ("<td style='text-align: center;'>" . $rec['prod_capacity'] . "</td>");
+            echo ("<td style='text-align: center;'><b>" . $rec['prod_motor_capacity'] . "</b><br>" . $rec['prod_motor_speed'] . "</td>");
+
+            if ($rec['prod_phase'] == "Single Phase") {
+                echo ("<td><span class='badge badge-pill badge-primary'>Single Phase</span></td>");
+            } else if ($rec['prod_phase'] == "Three Phase") {
+                echo ("<td><span class='badge badge-pill badge-danger'>Three Phase</span></td>");
+            } else {
+            }
+
+            echo ("<td style='text-align: right;'>Rs. " . number_format($rec['prod_unit_price']) . ".00</td>");
+            echo ("<td style='text-align: center;'>" . $rec['prod_reorder_level'] . " unit(s)</td>");
+            echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-info btn-sm btn-block'><i class='fas fa-qrcode'></i>&nbsp;QR</button></td>");
+            echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-secondary btn-reactivate btn-sm btn-block'><i class='fas fa-sync'></i>&nbsp;&nbsp;Reactivate</button></td>");
 
             echo ("</tr>");
         }
@@ -185,7 +241,6 @@ function getsingleproduct($id)
 //update the product status from 1 to 0
 function updateProductStatus($prodId)
 {
-
     //connection
     $conn = Connection();
 
@@ -206,7 +261,28 @@ function updateProductStatus($prodId)
     }
 }
 
+//update the product status from 1 to 0
+function reactivateProduct($prodId)
+{
+    //connection
+    $conn = Connection();
 
+    //update sql
+    $sql_update = "UPDATE product_tbl SET prod_status = 1 WHERE prod_id = '$prodId';";
+
+    $update_result = mysqli_query($conn, $sql_update);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    if ($update_result > 0) {
+        return ("reactivated");
+    } else {
+        return false;
+    }
+}
 
 function fetchProducts()
 {

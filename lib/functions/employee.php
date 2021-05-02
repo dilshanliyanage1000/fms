@@ -65,10 +65,14 @@ function empRegistration($file_name, $file_path, $firstname, $lastname, $jobrole
 
 function ViewEmployee()
 {
-
     $conn = Connection();
 
-    $view_sql = "SELECT * FROM emp_tbl ORDER BY emp_id DESC;";
+    $view_sql = "SELECT *
+                FROM emp_tbl
+                INNER JOIN emp_jobrole_tbl
+                ON emp_tbl.jobrole_id = emp_jobrole_tbl.jobrole_id
+                WHERE emp_tbl.emp_status = 1
+                ORDER BY emp_tbl.emp_id DESC;";
 
     $view_result = mysqli_query($conn, $view_sql);
 
@@ -93,27 +97,29 @@ function ViewEmployee()
             echo ("<td>" . $rec['emp_fname'] . "&nbsp;" . $rec['emp_lname'] . "</td>");
 
             if ($rec['jobrole_id'] == "EJR0000001") {
-                echo ("<td><span class='badge badge-pill badge-dark'>Admin</span></td>");
+                echo ("<td><span class='badge badge-pill badge-dark'>" . $rec['jobrole_name'] . "</span></td>");
             } else if ($rec['jobrole_id'] == "EJR0000002") {
-                echo ("<td><span class='badge badge-pill badge-primary'>Supervisor</span></td>");
+                echo ("<td><span class='badge badge-pill badge-primary'>" . $rec['jobrole_name'] . "</span></td>");
             } else if ($rec['jobrole_id'] == "EJR0000003") {
-                echo ("<td><span class='badge badge-pill badge-secondary'>Maintenance Staff</span></td>");
+                echo ("<td><span class='badge badge-pill badge-secondary'>" . $rec['jobrole_name'] . "</span></td>");
             } else if ($rec['jobrole_id'] == "EJR0000004") {
-                echo ("<td><span class='badge badge-pill badge-info'>Clerk</span></td>");
+                echo ("<td><span class='badge badge-pill badge-info'>" . $rec['jobrole_name'] . "</span></td>");
             } else if ($rec['jobrole_id'] == "EJR0000005") {
-                echo ("<td><span class='badge badge-pill badge-danger'>Kitchen Staff</span></td>");
+                echo ("<td><span class='badge badge-pill badge-danger'>" . $rec['jobrole_name'] . "</span></td>");
             } else if ($rec['jobrole_id'] == "EJR0000006") {
-                echo ("<td><span class='badge badge-pill badge-warning'>Production Staff</span></td>");
+                echo ("<td><span class='badge badge-pill badge-warning'>" . $rec['jobrole_name'] . "</span></td>");
             } else if ($rec['jobrole_id'] == "EJR0000007") {
-                echo ("<td><span class='badge badge-pill badge-light'>IT Staff</span></td>");
+                echo ("<td><span class='badge badge-pill badge-light'>" . $rec['jobrole_name'] . "</span></td>");
             } else if ($rec['jobrole_id'] == "EJR0000008") {
-                echo ("<td><span class='badge badge-pill badge-primary'>Transportation Staff</span></td>");
+                echo ("<td><span class='badge badge-pill badge-primary'>" . $rec['jobrole_name'] . "</span></td>");
             } else if ($rec['jobrole_id'] == "EJR0000009") {
-                echo ("<td><span class='badge badge-pill badge-secondary'>In-office Employee</span></td>");
+                echo ("<td><span class='badge badge-pill badge-secondary'>" . $rec['jobrole_name'] . "</span></td>");
             } else if ($rec['jobrole_id'] == "EJR0000010") {
-                echo ("<td><span class='badge badge-pill badge-info'>Receptionist</span></td>");
+                echo ("<td><span class='badge badge-pill badge-info'>" . $rec['jobrole_name'] . "</span></td>");
+            } else if ($rec['jobrole_id'] == "EJR0000011") {
+                echo ("<td><span class='badge badge-pill badge-danger'>" . $rec['jobrole_name'] . "</span></td>");
             } else {
-                echo ("<td><span class='badge badge-pill badge-danger'>Security Staff</span></td>");
+                echo ("<td><span class='badge badge-pill badge-dark'>" . $rec['jobrole_name'] . "</span></td>");
             }
 
             echo ("<td>" . $rec['emp_nic'] . "</td>");
@@ -130,6 +136,86 @@ function ViewEmployee()
             echo ("<td><button id=" . $rec['emp_id'] . " class='btn btn-info btn-sm'>QR</button></td>");
             echo ("<td><button id=" . $rec['emp_id'] . " class='btn btn-success btn-sm' data-toggle='modal' data-target='#editModal'>Edit</button></td>");
             echo ("<td><button id=" . $rec['emp_id'] . " class='btn btn-danger btn-sm'>Delete</button></td>");
+
+            echo ("</tr>");
+        }
+    } else {
+        return (" No record found");
+    }
+}
+
+function ViewDeletedEmployees()
+{
+    $conn = Connection();
+
+    $view_sql = "SELECT *
+                FROM emp_tbl
+                INNER JOIN emp_jobrole_tbl
+                ON emp_tbl.jobrole_id = emp_jobrole_tbl.jobrole_id
+                WHERE emp_tbl.emp_status = 0
+                ORDER BY emp_tbl.emp_id DESC;";
+
+    $view_result = mysqli_query($conn, $view_sql);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    //check no of records
+    $nor = mysqli_num_rows($view_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($view_result)) {
+
+            echo ("<td>" . $rec['emp_id'] . "</td>");
+
+            echo ("<td>
+                        <img id='zoom' src='../../" . $rec['emp_img_path'] . "' alt='Employee Image' class='responsive' style='height:80px; width:80px; margin-left:1px; margin-bottom:1px; margin-top:1px; margin-right:1px;'>
+                    </td>");
+
+            echo ("<td>" . $rec['emp_fname'] . "&nbsp;" . $rec['emp_lname'] . "</td>");
+
+            if ($rec['jobrole_id'] == "EJR0000001") {
+                echo ("<td><span class='badge badge-pill badge-dark'>" . $rec['jobrole_name'] . "</span></td>");
+            } else if ($rec['jobrole_id'] == "EJR0000002") {
+                echo ("<td><span class='badge badge-pill badge-primary'>" . $rec['jobrole_name'] . "</span></td>");
+            } else if ($rec['jobrole_id'] == "EJR0000003") {
+                echo ("<td><span class='badge badge-pill badge-secondary'>" . $rec['jobrole_name'] . "</span></td>");
+            } else if ($rec['jobrole_id'] == "EJR0000004") {
+                echo ("<td><span class='badge badge-pill badge-info'>" . $rec['jobrole_name'] . "</span></td>");
+            } else if ($rec['jobrole_id'] == "EJR0000005") {
+                echo ("<td><span class='badge badge-pill badge-danger'>" . $rec['jobrole_name'] . "</span></td>");
+            } else if ($rec['jobrole_id'] == "EJR0000006") {
+                echo ("<td><span class='badge badge-pill badge-warning'>" . $rec['jobrole_name'] . "</span></td>");
+            } else if ($rec['jobrole_id'] == "EJR0000007") {
+                echo ("<td><span class='badge badge-pill badge-light'>" . $rec['jobrole_name'] . "</span></td>");
+            } else if ($rec['jobrole_id'] == "EJR0000008") {
+                echo ("<td><span class='badge badge-pill badge-primary'>" . $rec['jobrole_name'] . "</span></td>");
+            } else if ($rec['jobrole_id'] == "EJR0000009") {
+                echo ("<td><span class='badge badge-pill badge-secondary'>" . $rec['jobrole_name'] . "</span></td>");
+            } else if ($rec['jobrole_id'] == "EJR0000010") {
+                echo ("<td><span class='badge badge-pill badge-info'>" . $rec['jobrole_name'] . "</span></td>");
+            } else if ($rec['jobrole_id'] == "EJR0000011") {
+                echo ("<td><span class='badge badge-pill badge-danger'>" . $rec['jobrole_name'] . "</span></td>");
+            } else {
+                echo ("<td><span class='badge badge-pill badge-dark'>" . $rec['jobrole_name'] . "</span></td>");
+            }
+
+            echo ("<td>" . $rec['emp_nic'] . "</td>");
+            echo ("<td>" . $rec['emp_telno'] . "<br>" . $rec['emp_telno_2'] . "</td>");
+            echo ("<td>" . $rec['emp_address'] . "</td>");
+            echo ("<td>" . $rec['emp_email'] . "</td>");
+
+            if ($rec['emp_status'] == 1) {
+                echo ("<td><span class='badge badge-pill badge-primary'>Active</span></td>");
+            } else {
+                echo ("<td><span class='badge badge-pill badge-danger'>Removed</span></td>");
+            }
+
+            echo ("<td><button id=" . $rec['emp_id'] . " class='btn btn-info btn-sm'>QR</button></td>");
+            echo ("<td><button id=" . $rec['emp_id'] . " class='btn btn-secondary btn-reactivate btn-sm'><i class='fas fa-sync'></i>&nbsp;&nbsp;Reactivate</button></td>");
 
             echo ("</tr>");
         }
@@ -220,21 +306,58 @@ function updateStatus($empID)
 {
     $conn = Connection();
 
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
     $sql_update = "UPDATE emp_tbl SET emp_status = 0 WHERE emp_id = '$empID';";
 
     $update_result = mysqli_query($conn, $sql_update);
 
-    $user_update = "UPDATE user_tbl SET user_status = 0 WHERE emp_id = '$empID';";
+    $checkUser = "SELECT * FROM user_tbl WHERE emp_id = '$empID';";
 
-    $update_user = mysqli_query($conn, $user_update);
+    $runCheck = mysqli_query($conn, $checkUser);
+
+    $nor = mysqli_num_rows($runCheck);
+
+    if ($nor > 1) {
+
+        $user_update = "UPDATE user_tbl SET user_status = 0 WHERE emp_id = '$empID';";
+
+        $update_user = mysqli_query($conn, $user_update);
+
+        if ($update_result > 0 && $update_user > 0) {
+            echo ("Deleted");
+        } else {
+            return false;
+        }
+
+    } else {
+
+        if ($update_result > 0) {
+            echo ("Deleted");
+        } else {
+            return false;
+        }
+    }
+}
+
+function reactivateEmployee($empID)
+{
+    $conn = Connection();
+
+    $sql_update = "UPDATE emp_tbl SET emp_status = 1 WHERE emp_id = '$empID';";
+
+    $update_result = mysqli_query($conn, $sql_update);
 
     //validate the command
     if (mysqli_errno($conn)) {
         echo (mysqli_error($conn));
     }
 
-    if ($update_result > 0 && $update_user > 0) {
-        echo("Deleted");
+    if ($update_result > 0) {
+        echo ("restored");
     } else {
         return false;
     }
@@ -248,7 +371,8 @@ function getSupervisorsforRQST()
                 FROM emp_tbl
                 INNER JOIN emp_jobrole_tbl
                 ON emp_tbl.jobrole_id = emp_jobrole_tbl.jobrole_id
-                WHERE emp_jobrole_tbl.jobrole_name = 'Supervisor' OR emp_jobrole_tbl.jobrole_name = 'Administrator';";
+                WHERE emp_jobrole_tbl.jobrole_name = 'Supervisor' OR emp_jobrole_tbl.jobrole_name = 'Administrator'
+                AND emp_tbl.emp_status = 1;";
 
     $search_result = mysqli_query($conn, $getSQL);
 

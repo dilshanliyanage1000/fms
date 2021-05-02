@@ -46,7 +46,7 @@ function ViewRawMaterial()
 
     $conn = Connection();
 
-    $view_sql = "SELECT * FROM rawmaterial_tbl ORDER BY rm_id DESC;";
+    $view_sql = "SELECT * FROM rawmaterial_tbl WHERE rm_status = 1;";
 
     $view_result = mysqli_query($conn, $view_sql);
 
@@ -72,8 +72,47 @@ function ViewRawMaterial()
             } else {
                 echo ("<td style='text-align:center'><span class='badge badge-pill badge-danger'>Removed</span></td>");
             }
-            echo ("<td><button id=" . $rec['rm_id'] . " class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editModal'>Edit</button></td>");
-            echo ("<td><button id=" . $rec['rm_id'] . " class='btn btn-danger btn-sm'>Delete</button></td>");
+            echo ("<td><button id=" . $rec['rm_id'] . " class='btn btn-primary btn-sm btn-block' data-toggle='modal' data-target='#editModal'><i class='fas fa-edit'></i>&nbsp;&nbsp;Edit</button></td>");
+            echo ("<td><button id=" . $rec['rm_id'] . " class='btn btn-danger btn-sm btn-block'><i class='fas fa-trash'></i>&nbsp;&nbsp;Delete</button></td>");
+            echo ("</tr>");
+        }
+    } else {
+        echo (" No record found");
+    }
+}
+
+function DeletedRawMaterials()
+{
+
+    $conn = Connection();
+
+    $view_sql = "SELECT * FROM rawmaterial_tbl WHERE rm_status = 0;";
+
+    $view_result = mysqli_query($conn, $view_sql);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    //check no of records
+    $nor = mysqli_num_rows($view_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($view_result)) {
+
+            echo ("<td style='text-align:center;'>" . $rec['rm_id'] . "</td>");
+            echo ("<td>" . $rec['rm_name'] . "</td>");
+            echo ("<td>" . $rec['rm_description'] . "</td>");
+            echo ("<td style='text-align:center;'>" . $rec['rm_reorder_level'] . " Kg(s)</td>");
+
+            if ($rec['rm_status'] == 1) {
+                echo ("<td style='text-align:center'><span class='badge badge-pill badge-primary'>Active</span></td>");
+            } else {
+                echo ("<td style='text-align:center'><span class='badge badge-pill badge-danger'>Removed</span></td>");
+            }
+            echo ("<td><button id=" . $rec['rm_id'] . " class='btn btn-secondary btn-reactivate btn-sm btn-block'><i class='fas fa-sync'></i>&nbsp;&nbsp;Reactivate</button></td>");
             echo ("</tr>");
         }
     } else {
@@ -105,14 +144,35 @@ function editRawMaterial($id, $name, $desc, $reorder)
 
 //update the raw material status from 1 to 0
 
-function updateStatus($rmId)
+function deleteRawMaterial($rmId)
 {
-
     //connection
     $conn = Connection();
 
     //update sql
     $sql_update = "UPDATE rawmaterial_tbl SET rm_status = 0 WHERE rm_id = '$rmId';";
+
+    $update_result = mysqli_query($conn, $sql_update);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    if ($update_result > 0) {
+        return ("Deleted");
+    } else {
+        return false;
+    }
+}
+
+function reactivateRawMaterial($rmId)
+{
+    //connection
+    $conn = Connection();
+
+    //update sql
+    $sql_update = "UPDATE rawmaterial_tbl SET rm_status = 1 WHERE rm_id = '$rmId';";
 
     $update_result = mysqli_query($conn, $sql_update);
 

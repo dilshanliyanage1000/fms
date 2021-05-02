@@ -6,16 +6,24 @@ include_once('db_conn.php');
 //id auto gen
 include_once('id_maker.php');
 
-function newUserLogin($emp_id, $role, $password)
+function newUserLogin($emp_id, $role, $password, $passwordtwo)
 {
     //validation
-    if (empty($emp_id) or empty($role) or empty($password)) {
+    if (empty($emp_id) or empty($role) or empty($password) or empty($passwordtwo)) {
         return ("Please check your inputs ... ");
     }
 
     $conn = Connection();
 
-    $user_validation = "SELECT * FROM emp_tbl INNER JOIN user_tbl ON emp_tbl.emp_id = user_tbl.emp_id WHERE emp_tbl.emp_id LIKE '%$emp_id%';";
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    $user_validation = "SELECT *
+                        FROM emp_tbl
+                        INNER JOIN user_tbl
+                        ON emp_tbl.emp_id = user_tbl.emp_id
+                        WHERE emp_tbl.emp_id = '$emp_id';";
 
     $search_result = mysqli_query($conn, $user_validation);
 
@@ -26,23 +34,24 @@ function newUserLogin($emp_id, $role, $password)
         echo ($error_msg);
     } else {
 
-        $id = Auto_id("user_id", "user_tbl", "USR");
+        if ($password == $passwordtwo) {
 
-        $newPwd = md5($password);
+            $id = Auto_id("user_id", "user_tbl", "USR");
 
-        $sql_insert = "INSERT INTO user_tbl (user_id, emp_id, user_pwd, user_role, user_status)
-                       VALUES ('$id','$emp_id','$newPwd','$role',1);";
+            $newPwd = md5($password);
 
-        $sql_result = mysqli_query($conn, $sql_insert);
+            $sql_insert = "INSERT INTO user_tbl (user_id, emp_id, user_pwd, user_role, user_status)
+                            VALUES ('$id','$emp_id','$newPwd','$role',1);";
 
-        //validate the command
-        if (mysqli_errno($conn)) {
-            echo (mysqli_error($conn));
-        }
+            $sql_result = mysqli_query($conn, $sql_insert);
 
-        if ($sql_result > 0) {
-            return "success";
+            if ($sql_result > 0) {
+                echo "success";
+            } else {
+                return "Error, Try again !!";
+            }
         } else {
+
             return "Error, Try again !!";
         }
     }
@@ -92,6 +101,7 @@ function getUsers()
         while ($rec = mysqli_fetch_assoc($view_result)) {
 
             echo ("<td>" . $rec['user_id'] . "</td>");
+            echo ("<td>" . $rec['emp_id'] . "</td>");
             echo ("<td>" . $rec['emp_fname'] . "</td>");
             echo ("<td>" . $rec['emp_lname'] . "</td>");
             echo ("<td>" . $rec['emp_email'] . "</td>");
@@ -199,4 +209,3 @@ function editPassword($userID, $empID, $passwordone, $passwordtwo)
         return false;
     }
 }
-?>

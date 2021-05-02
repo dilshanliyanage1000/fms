@@ -179,7 +179,8 @@ function prodSearchInvoice($search)
 
     $searchSql = "SELECT *
                   FROM product_tbl 
-                  WHERE prod_id  LIKE '%$search%' OR
+                  WHERE prod_status = 1 AND
+                    prod_id  LIKE '%$search%' OR
                     prod_name LIKE '%$search%' OR
                     prod_code LIKE '%$search%' OR
                     prod_description LIKE '%$search%' OR
@@ -259,7 +260,8 @@ function partSearchInvoice($search)
 
     $searchSql = "SELECT *
                   FROM parts_tbl 
-                  WHERE part_id  LIKE '%$search%' OR
+                  WHERE part_status = 1 AND
+                    part_id  LIKE '%$search%' OR
                     part_code LIKE '%$search%' OR
                     part_name LIKE '%$search%' OR
                     prod_id LIKE '%$search%' OR
@@ -428,6 +430,8 @@ function PartsInvoiceList()
             echo ("<td style='text-align:right;'>" . $finalprice . "</td>");
 
             echo ("<td><button type='button' style='width:100%;' id='" . $rec["p_inv_id"] . "' class='btn btn-selectinvoice btn-info btn-sm' data-toggle='modal' data-target='#editPartsModal'><i class='fas fa-info-circle'></i>&nbsp;&nbsp; Invoice Summary</button></td>");
+
+            echo ("<td><button type='button' style='width:100%;' id='" . $rec["p_inv_id"] . "' class='btn btn-delpartinvoice btn-danger btn-sm'><i class='fas fa-trash'></i>&nbsp;&nbsp;Delete</button></td>");
 
             echo ("</tr>");
         }
@@ -796,6 +800,52 @@ function deleteInvoice($id)
         $runDel = mysqli_query($conn, $delSQL);
 
         if ($runDel > 0 && $runItemDel > 0) {
+            echo ("success");
+        } else {
+            echo ("error");
+        }
+    } else {
+        echo ("No records found!!!");
+    }
+}
+
+function deletePartsInvoice($id)
+{
+    $conn = Connection();
+
+    $checkSQL = "SELECT * FROM invoice_parts_tbl WHERE p_inv_id = '$id';";
+
+    $runSQL = mysqli_query($conn, $checkSQL);
+
+    $nor = mysqli_num_rows($runSQL);
+
+    if ($nor > 0) {
+
+        $delInvoiceItems = "SELECT part_id, part_qty FROM invoice_parts_items_tbl WHERE p_inv_id = '$id';";
+
+        $runItems = mysqli_query($conn, $delInvoiceItems);
+
+        if (mysqli_num_rows($runItems) > 0) {
+            while ($rec = mysqli_fetch_assoc($runItems)) {
+
+                $partID = $rec['part_id'];
+                $partQty = $rec['part_qty'];
+
+                $deletePart = "UPDATE stock_part_tbl SET part_qty = part_qty + $partQty WHERE part_id = '$partID';";
+                $rundelPart = mysqli_query($conn, $deletePart);
+            }
+        }
+
+        $delItems = "UPDATE invoice_parts_items_tbl SET pinit_status = 0 WHERE p_inv_id = '$id';";
+
+        $runItemDel = mysqli_query($conn, $delItems);
+
+        $delSQL = "UPDATE invoice_parts_tbl SET p_inv_status = 0 WHERE p_inv_id = '$id';";
+
+        $runDel = mysqli_query($conn, $delSQL);
+
+        if ($runDel > 0 && $runItemDel > 0) {
+            
             echo ("success");
         } else {
             echo ("error");

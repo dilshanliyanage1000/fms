@@ -3,11 +3,15 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2 || $_SESSION['user_role'] == 3)) {
 
 ?>
+    <style>
+        .cancel {
+            background-color: #FFCE67;
+        }
+    </style>
+
     <br>
 
     <div class="col-md-12">
@@ -38,7 +42,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                             <div class="row form-group">
                                 <label for="rm_reorder_level">Reorder Level</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" name="rm_reorder_level" id="rm_reorder_level" class="form-control" placeholder="Ex: 5 loads">
+                                    <input type="number" name="rm_reorder_level" id="rm_reorder_level" class="form-control" placeholder="Ex: 5 loads">
                                     <div class="input-group-append">
                                         <span class="input-group-text">Kg(s)</span>
                                     </div>
@@ -67,25 +71,58 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
             <h1 class="display-5" style="text-align: center;"><i class="fas fa-truck-loading fa-1x"></i>&nbsp;&nbsp;Raw Material List</h1>
             <br>
             <hr class="my-4">
-            <table id="allRawMaterials" class="table table-hover table-inverse table-responsive table-bordered" id="product_list">
-                <thead>
-                    <tr>
-                        <th style="min-width: 150px;">Raw Material ID </th>
-                        <th style="min-width: 150px;">Name </th>
-                        <th style="min-width: 200px;">Description </th>
-                        <th style="min-width: 150px;">Reorder Level </th>
-                        <th style="min-width: 100px;">Status </th>
-                        <th style="min-width: 50px;">Edit</th>
-                        <th style="min-width: 50px;">Delete</th>
-                    </tr>
-                </thead>
-                <tbody id="search_body_result">
-                    <?php
-                    include_once('../../functions/rawmaterial.php');
-                    ViewRawMaterial();
-                    ?>
-                </tbody>
-            </table>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#allrawmat">All Raw Materials</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#delrawmat">Deleted Raw Materials</a>
+                </li>
+            </ul>
+            <br>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade show active" id="allrawmat">
+                    <table id="allRawMaterials" class="table table-hover table-inverse table-responsive table-bordered" id="product_list">
+                        <thead>
+                            <tr>
+                                <th style="min-width: 180px; text-align:center;">Raw Material ID </th>
+                                <th style="min-width: 200px; text-align:center;">Name </th>
+                                <th style="min-width: 200px; text-align:center;">Description </th>
+                                <th style="min-width: 150px; text-align:center;">Reorder Level </th>
+                                <th style="min-width: 100px; text-align:center;">Status </th>
+                                <th style="min-width: 100px; text-align:center;">Edit</th>
+                                <th style="min-width: 100px; text-align:center;">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/rawmaterial.php');
+                            ViewRawMaterial();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="delrawmat">
+                    <table id="deletedRawMaterials" class="table table-hover table-inverse table-responsive table-bordered" id="product_list">
+                        <thead>
+                            <tr>
+                                <th style="min-width: 180px; text-align:center;">Raw Material ID </th>
+                                <th style="min-width: 200px; text-align:center;">Name </th>
+                                <th style="min-width: 250px; text-align:center;">Description </th>
+                                <th style="min-width: 150px; text-align:center;">Reorder Level </th>
+                                <th style="min-width: 100px; text-align:center;">Status </th>
+                                <th style="min-width: 100px; text-align:center;">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/rawmaterial.php');
+                            DeletedRawMaterials();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -137,8 +174,70 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
     <script>
         $(document).ready(function() {
 
+            $("#rm_reorder_level").keyup(function() {
+
+                var value = $(this).val();
+
+                if (value < 0) {
+                    swal("Error!", "Negative values are not allowed!", "warning");
+                    $("#rm_reorder_level").val('');
+                }
+            });
+
+            $("#rm_reorder_level").change(function() {
+
+                var value = $(this).val();
+
+                if (value < 0) {
+                    swal("Error!", "Negative values are not allowed!", "warning");
+                    $("#rm_reorder_level").val('');
+                }
+            });
+
             $("#allRawMaterials").DataTable({
                 dom: 'B<"clear">lfrtip',
+                "order": [
+                    [0, "desc"]
+                ],
+                buttons: [{
+                        extend: 'copyHtml5',
+                        text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6]
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>&nbsp;Export to Excel',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: RAW MATERIAL LIST]"
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fas fa-file-csv"></i>&nbsp;Export to CSV',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: RAW MATERIAL LIST]"
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i>&nbsp;Export to PDF',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: RAW MATERIAL LIST]"
+                    }
+                ]
+            });
+
+            $("#deletedRawMaterials").DataTable({
+                dom: 'B<"clear">lfrtip',
+                "order": [
+                    [0, "desc"]
+                ],
                 buttons: [{
                         extend: 'copyHtml5',
                         text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',
@@ -195,10 +294,6 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                             text: 'New raw material has been successfully registered',
                             showConfirmButton: false,
                             timer: 2000
-                        }).then((result) => {
-                            if (result.dismiss === Swal.DismissReason.timer) {
-                                $("#new_reminder").modal("hide");
-                            }
                         });
                     } else {
                         swal("Check your inputs!", "Kindly check whether all the mandatory fields have been filled out", "warning");
@@ -240,10 +335,6 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                 text: 'Raw material details have been updated successfully',
                                 showConfirmButton: false,
                                 timer: 2000
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
                             });
                         } else {
 
@@ -285,11 +376,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                         text: 'Product details succesfully deleted!',
                                         showConfirmButton: false,
                                         timer: 2000
-                                    }).then((result) => {
-                                        if (result.dismiss === Swal.DismissReason.timer) {
-                                            $("#new_reminder").modal("hide");
-                                        }
-                                    });
+                                    })
                                 }
                             });
                         } else {
@@ -299,10 +386,51 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                 text: 'Customer details remain!',
                                 showConfirmButton: false,
                                 timer: 2000
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
+                            });
+                        }
+                    });
+            });
+
+            $('#deletedRawMaterials tbody').on('click', '.btn-reactivate', function() {
+
+                this.click;
+                $trID = $(this).attr('id');
+
+                swal({
+                        title: "Reactivate Raw Material : " + $trID + "?",
+                        text: "You will restore " + $trID + "'s data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Delete",
+                        confirmButtonColor: "#000000",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.get("../../route/rawmaterial/reactivateRawMat.php", {
+                                id: $trID
+                            }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
+                                swal({
+                                    type: 'success',
+                                    title: 'Raw Material Reactivated!',
+                                    text: 'Raw Material details succesfully restored!',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            });
+                        } else {
+                            swal({
+                                type: 'warning',
+                                title: 'Cancelled!',
+                                text: 'Raw Material details remain deleted!',
+                                showConfirmButton: false,
+                                timer: 2000
                             });
                         }
                     });

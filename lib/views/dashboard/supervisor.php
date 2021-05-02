@@ -7,8 +7,6 @@ include_once('../../inc/header.php');
 
 if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 3) {
 
-    include_once('../../inc/sidenav_supervisor.php');
-
 ?>
 
     <style>

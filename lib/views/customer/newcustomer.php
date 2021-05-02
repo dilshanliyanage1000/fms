@@ -3,17 +3,22 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2 || $_SESSION['user_role'] == 4)) {
 
 ?>
+    <style>
+        .cancel {
+            background-color: #FFCE67;
+        }
+    </style>
+
     <br>
 
     <div class="col-md-12">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../dashboard/admin.php">Dashboard</a></li>
-            <li class="breadcrumb-item active">Customer</li>
+            <li class="breadcrumb-item"><a href="#">Customer</a></li>
+            <li class="breadcrumb-item active">Add Customer</li>
         </ol>
     </div>
 
@@ -136,33 +141,71 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
         </div>
     </div>
 
+
+
     <div class="col-md-12">
         <div class="jumbotron">
             <h1 class="display-5" style="text-align: center;"><i class="fas fa-user-friends fa-1x"></i>&nbsp;&nbsp;Customer Information</h1>
             <hr class="my-4">
             <!-- our usual table -->
-            <table id="allCustomers" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th style="min-width: 100px;">Code</th>
-                        <th style="min-width: 100px;">First Name </th>
-                        <th style="min-width: 100px;">Last Name </th>
-                        <th style="min-width: 120px;">Email </th>
-                        <th style="min-width: 150px;">Phone #1 </th>
-                        <th style="min-width: 150px;">Phone #2 </th>
-                        <th style="min-width: 150px;">Address </th>
-                        <th style="width: 40px;">Status </th>
-                        <th style="width: 40px;">Edit </th>
-                        <th style="width: 40px;">Delete </th>
-                    </tr>
-                </thead>
-                <tbody id="search_body_result">
-                    <?php
-                    include_once('../../functions/customer.php');
-                    ViewCustomer();
-                    ?>
-                </tbody>
-            </table>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#allcustomers">All Customers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#deletedcustomers">Deleted Customers</a>
+                </li>
+            </ul>
+            <br>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade show active" id="allcustomers">
+                    <table id="allCustomers" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th style="min-width: 100px;">Code</th>
+                                <th style="min-width: 100px;">First Name </th>
+                                <th style="min-width: 100px;">Last Name </th>
+                                <th style="min-width: 120px;">Email </th>
+                                <th style="min-width: 150px;">Phone #1 </th>
+                                <th style="min-width: 150px;">Phone #2 </th>
+                                <th style="min-width: 150px;">Address </th>
+                                <th style="width: 40px;">Status </th>
+                                <th style="width: 40px;">Edit </th>
+                                <th style="width: 40px;">Delete </th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/customer.php');
+                            ViewCustomer();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="deletedcustomers">
+                    <table id="deletedCustomers" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th style="min-width: 100px;">Code</th>
+                                <th style="min-width: 100px;">First Name </th>
+                                <th style="min-width: 100px;">Last Name </th>
+                                <th style="min-width: 120px;">Email </th>
+                                <th style="min-width: 150px;">Phone #1 </th>
+                                <th style="min-width: 150px;">Phone #2 </th>
+                                <th style="min-width: 150px;">Address </th>
+                                <th style="width: 40px;">Status </th>
+                                <th style="width: 40px;">Delete </th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/customer.php');
+                            DeletedCustomer();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -177,8 +220,6 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                     </button>
                 </div>
                 <div class="modal-body">
-
-
                     <form id="editform">
                         <div class="row form-group">
                             <div class="col-md-4">
@@ -286,6 +327,9 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
 
             $("#allCustomers").DataTable({
                 dom: 'B<"clear">lfrtip',
+                "order": [
+                    [0, "desc"]
+                ],
                 buttons: [{
                         extend: 'copyHtml5',
                         text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',
@@ -316,6 +360,45 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                             columns: [0, 1, 2, 3, 4, 5, 6]
                         },
                         title: "Udaya Industries [REPORT: CUSTOMER LIST]"
+                    }
+                ]
+            });
+
+            $("#deletedCustomers").DataTable({
+                dom: 'B<"clear">lfrtip',
+                "order": [
+                    [0, "desc"]
+                ],
+                buttons: [{
+                        extend: 'copyHtml5',
+                        text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>&nbsp;Export to Excel',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED CUSTOMER LIST]"
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fas fa-file-csv"></i>&nbsp;Export to CSV',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED CUSTOMER LIST]"
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i>&nbsp;Export to PDF',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED CUSTOMER LIST]"
                     }
                 ]
             });
@@ -543,7 +626,6 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                         setTimeout(() => {
                             location.reload();
                         }, 2100);
-                        $('#editModal').modal('hide');
                         swal({
                             type: 'success',
                             title: 'Customer details updated!',
@@ -581,6 +663,9 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                             $.get("../../route/customer/delete.php", {
                                 id: $trID
                             }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
                                 swal({
                                     type: 'success',
                                     title: 'Customer deleted!',
@@ -594,6 +679,52 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                 type: 'warning',
                                 title: 'Cancelled!',
                                 text: 'Customer details remain!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }
+                    });
+            });
+
+
+            $('#deletedCustomers tbody').on('click', '.btn-reactivate', function() {
+
+                this.click;
+                $trID = $(this).attr('id');
+
+                swal({
+                        title: "Reactivate Customer : " + $trID + "?",
+                        text: "You will restore " + $trID + "'s data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Delete",
+                        confirmButtonColor: "#000000",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.get("../../route/customer/reactivate_customer.php", {
+                                id: $trID
+                            }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
+                                swal({
+                                    type: 'success',
+                                    title: 'Customer Reactivated!',
+                                    text: 'Customer details succesfully restored!',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            });
+                        } else {
+                            swal({
+                                type: 'warning',
+                                title: 'Cancelled!',
+                                text: 'Customer details remain deleted!',
                                 showConfirmButton: false,
                                 timer: 2000
                             });

@@ -2,7 +2,7 @@
     //include warehouse function
     include_once('../../functions/warehouse.php');
 
-    $result = updateStatus($_GET['id']);  
+    $result = deleteWarehouse($_GET['id']);  
     
     echo($result);
     

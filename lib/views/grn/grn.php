@@ -3,9 +3,7 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 4)) {
 
 ?>
 
@@ -94,7 +92,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                         <label class="custom-file-label" for="grn_note">Choose file</label>
                                     </div>
                                 </div>
-                                <p id="grn_img" style="color: red;"></p>
+                                <p id="grn_img" style="color: #23b06e;"></p>
                             </div>
                             <div class="col-md-4">
                                 <label>Additional/Extra Notes :</label>

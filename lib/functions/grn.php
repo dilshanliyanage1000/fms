@@ -13,7 +13,7 @@ function getSupplierforSelect()
     $conn = Connection();
 
     //search SQL 
-    $sql_search = "SELECT * FROM supplier_tbl;";
+    $sql_search = "SELECT * FROM supplier_tbl WHERE sup_status = 1;";
 
     $search_result = mysqli_query($conn, $sql_search);
 
@@ -43,7 +43,7 @@ function getWarehouseforSelect()
     $conn = Connection();
 
     //search SQL 
-    $sql_search = "SELECT * FROM warehouse_tbl;";
+    $sql_search = "SELECT * FROM warehouse_tbl WHERE wh_status = 1;";
 
     $search_result = mysqli_query($conn, $sql_search);
 
@@ -66,9 +66,6 @@ function getWarehouseforSelect()
 }
 
 
-// ------------------------------Customer get details section------------------------------------
-
-
 function rmSearchonSupplier($search, $supplier)
 {
     $conn = Connection();
@@ -77,7 +74,9 @@ function rmSearchonSupplier($search, $supplier)
                     FROM ((supplier_rm_tbl
                     INNER JOIN supplier_tbl ON supplier_rm_tbl.sup_id = supplier_tbl.sup_id)
                     INNER JOIN rawmaterial_tbl ON supplier_rm_tbl.rm_id = rawmaterial_tbl.rm_id)
-                    WHERE supplier_rm_tbl.sup_id = '$supplier' AND (rawmaterial_tbl.rm_name LIKE '%$search%' OR rawmaterial_tbl.rm_id LIKE '%$search%' OR rawmaterial_tbl.rm_description LIKE '%$search%')";
+                    WHERE supplier_rm_tbl.sup_id = '$supplier'
+                    AND supplier_tbl.sup_status = 1
+                    AND (rawmaterial_tbl.rm_name LIKE '%$search%' OR rawmaterial_tbl.rm_id LIKE '%$search%' OR rawmaterial_tbl.rm_description LIKE '%$search%')";
 
 
     $searchQuery = mysqli_query($conn, $searchSql);
@@ -102,9 +101,11 @@ function rmSearchonSupplier($search, $supplier)
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-10">
-                                <p class="card-text">ID :&nbsp;' . $rec["rm_id"] . '</br>
-                                Raw Material Name :&nbsp;' . $rec["rm_name"] . '</br>
-                                Description :&nbsp;' . $rec["rm_description"] . '</br>
+                                <h6 class="card-text">
+                                    ID :&nbsp;' . $rec["rm_id"] . '</br>
+                                    Raw Material Name :&nbsp;<b>' . $rec["rm_name"] . '</b></br>
+                                    Description :&nbsp;' . $rec["rm_description"] . '</br>
+                                </h6>
                             </div>
                             <div class="col-md-2">
                                 <button style="width:100%; margin-right:5px;" id="' . $rec["rm_id"] . '" type="button" class="btn btn-success"><i class="fas fa-check fa-1x"></i></button>
@@ -129,7 +130,7 @@ function getRMforGRN($rmId)
 {
     $conn = Connection();
 
-    $selectCus = "SELECT * FROM rawmaterial_tbl WHERE rm_id = '$rmId';";
+    $selectCus = "SELECT * FROM rawmaterial_tbl WHERE rm_id = '$rmId' AND rm_status = 1;";
 
     $cusResult = mysqli_query($conn, $selectCus);
 
@@ -187,7 +188,7 @@ function getRecentlyAddedGRN()
 
     $conn = Connection();
 
-    $prev_id = "SELECT * FROM goodsrecievednote_tbl ORDER BY grn_id DESC limit 1;";
+    $prev_id = "SELECT * FROM goodsrecievednote_tbl WHERE grn_status = 1 ORDER BY grn_id DESC limit 1;";
 
     $result = mysqli_query($conn, $prev_id);
 
@@ -245,7 +246,7 @@ function getWarehouseName($id)
 
     $conn = Connection();
 
-    $sql_select = "SELECT wh_address FROM warehouse_tbl WHERE wh_id ='$id';";
+    $sql_select = "SELECT wh_address FROM warehouse_tbl WHERE wh_id ='$id' AND wh_status = 1;";
 
     $sql_result = mysqli_query($conn, $sql_select);
 
@@ -273,7 +274,7 @@ function getSupplierName($id)
 
     $conn = Connection();
 
-    $sql_select = "SELECT sup_company_name FROM supplier_tbl WHERE sup_id ='$id';";
+    $sql_select = "SELECT sup_company_name FROM supplier_tbl WHERE sup_id ='$id' AND sup_status = '1';";
 
     $sql_result = mysqli_query($conn, $sql_select);
 

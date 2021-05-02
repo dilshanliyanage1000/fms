@@ -1,14 +1,17 @@
 <?php
 session_start();
-//import HTML header section
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2 || $_SESSION['user_role'] == 4)) {
 
 ?>
+    <style>
+        .cancel {
+            background-color: #FFCE67;
+        }
+    </style>
+
     <br>
 
     <div class="col-md-12">
@@ -56,7 +59,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                         <div class="row form-group">
                             <div class="col-md-6">
                                 <label for="fax">Fax Number</label>
-                                <input type="text" name="fax" id="fax" class="form-control" placeholder="Ex: 0779563256" maxlength="10">
+                                <input type="number" name="fax" id="fax" class="form-control" placeholder="Ex: 0779563256" maxlength="10">
                             </div>
                             <div class="col-md-6">
                                 <label for="address">Address</label>
@@ -95,27 +98,62 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
             <h1 class="display-5" style="text-align: center;"><i class="fas fa-user-friends fa-1x"></i>&nbsp;&nbsp;Supplier Information</h1>
             <hr class="my-4">
             <!-- our usual table -->
-            <table id="allSuppliers" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th style="width: 90px;">Supplier ID </th>
-                        <th style="width: 150px;">Company Name </th>
-                        <th>Email </th>
-                        <th style="width: 100px;">Contact No </th>
-                        <th>Address </th>
-                        <th style="width: 200px;">Supplied Raw Material</th>
-                        <th style="width: 40px;">Status </th>
-                        <th style="width: 40px;">Edit </th>
-                        <th style="width: 40px;">Delete </th>
-                    </tr>
-                </thead>
-                <tbody id="search_body_result">
-                    <?php
-                    include_once('../../functions/supplier.php');
-                    ViewSupplier();
-                    ?>
-                </tbody>
-            </table>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#supplier_list">All Suppliers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#deleted_supplier_list">Deleted Suppliers</a>
+                </li>
+            </ul>
+            <br>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade show active" id="supplier_list">
+                    <table id="allSuppliers" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th style="width: 90px;">Supplier ID </th>
+                                <th style="width: 150px;">Company Name </th>
+                                <th>Email </th>
+                                <th style="width: 100px;">Contact No </th>
+                                <th>Address </th>
+                                <th style="width: 200px;">Supplied Raw Material</th>
+                                <th style="width: 40px;">Status </th>
+                                <th style="width: 40px;">Edit </th>
+                                <th style="width: 40px;">Delete </th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/supplier.php');
+                            ViewSupplier();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="deleted_supplier_list">
+                    <table id="deletedSuppliers" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th style="width: 90px;">Supplier ID </th>
+                                <th style="width: 150px;">Company Name </th>
+                                <th>Email </th>
+                                <th style="width: 100px;">Contact No </th>
+                                <th>Address </th>
+                                <th style="width: 200px;">Supplied Raw Material</th>
+                                <th style="width: 40px;">Status </th>
+                                <th style="width: 40px;">Delete </th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/supplier.php');
+                            ViewDeletedSupplier();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -152,18 +190,18 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                         <div class="row form-group">
                             <div class="col-md-6">
                                 <label for="supPhone">Phone Number (Primary)</label>
-                                <input type="text" name="supPhone" id="supPhone" class="form-control" placeholder="Ex: 0771586351" maxlength="10">
+                                <input type="number" name="supPhone" id="supPhone" class="form-control" placeholder="Ex: 0771586351" maxlength="10">
                             </div>
                             <div class="col-md-6">
                                 <label for="supPhoneTwo">Phone Number (Optional)</label>
-                                <input type="text" name="supPhoneTwo" id="supPhoneTwo" class="form-control" placeholder="Ex: 0771547896" maxlength="10">
+                                <input type="number" name="supPhoneTwo" id="supPhoneTwo" class="form-control" placeholder="Ex: 0771547896" maxlength="10">
                             </div>
                         </div>
 
                         <div class="row form-group">
                             <div class="col-md-6">
                                 <label for="supFax">Fax Number</label>
-                                <input type="text" name="supFax" id="supFax" class="form-control" placeholder="Ex: 0779563256" maxlength="10">
+                                <input type="number" name="supFax" id="supFax" class="form-control" placeholder="Ex: 0779563256" maxlength="10">
                             </div>
                             <div class="col-md-6">
                                 <label for="supAddress">Address</label>
@@ -219,7 +257,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6]
                         },
-                        title: "Udaya Industries [REPORT: CUSTOMER LIST]"
+                        title: "Udaya Industries [REPORT: SUPPLIER LIST]"
                     },
                     {
                         extend: 'csvHtml5',
@@ -227,7 +265,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6]
                         },
-                        title: "Udaya Industries [REPORT: CUSTOMER LIST]"
+                        title: "Udaya Industries [REPORT: SUPPLIER LIST]"
                     },
                     {
                         extend: 'pdfHtml5',
@@ -235,9 +273,153 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6]
                         },
-                        title: "Udaya Industries [REPORT: CUSTOMER LIST]"
+                        title: "Udaya Industries [REPORT: SUPPLIER LIST]"
                     }
                 ]
+            });
+
+            $("#deletedSuppliers").DataTable({
+                dom: 'B<"clear">lfrtip',
+                buttons: [{
+                        extend: 'copyHtml5',
+                        text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>&nbsp;Export to Excel',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED SUPPLIER LIST]"
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fas fa-file-csv"></i>&nbsp;Export to CSV',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED SUPPLIER LIST]"
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i>&nbsp;Export to PDF',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED SUPPLIER LIST]"
+                    }
+                ]
+            });
+
+            $("#phoneone").keyup(function() {
+                $phoneonevalue = $(this).val();
+                if ($phoneonevalue < 0) {
+                    swal("Error!", "Phone number cannot have negative values!", "warning");
+                    $("#phoneone").val('');
+                    document.getElementById('btnSave').disabled = true;
+                } else {
+                    if ($phoneonevalue.length > 10) {
+                        swal("Error!", "Phone number should contain only 10 digits!", "warning");
+                        $("#phoneone").val('');
+                        document.getElementById('btnSave').disabled = true;
+                    } else if ($phoneonevalue.length == 9) {
+                        document.getElementById('btnSave').disabled = false;
+                    } else if ($phoneonevalue.length < 9) {
+                        document.getElementById('btnSave').disabled = true;
+                    }
+                }
+            });
+
+            $("#phoneone").change(function() {
+                $phoneonevalue = $(this).val();
+                if ($phoneonevalue < 0) {
+                    swal("Error!", "Phone number cannot have negative values!", "warning");
+                    $("#phoneone").val('');
+                    document.getElementById('btnSave').disabled = true;
+                } else {
+                    if ($phoneonevalue.length > 10) {
+                        swal("Error!", "Phone number should contain only 10 digits!", "warning");
+                        $("#phoneone").val('');
+                        document.getElementById('btnSave').disabled = true;
+                    } else if ($phoneonevalue.length == 9) {
+                        document.getElementById('btnSave').disabled = false;
+                    } else if ($phoneonevalue.length < 9) {
+                        document.getElementById('btnSave').disabled = true;
+                    }
+                }
+            });
+
+            $("#phonetwo").keyup(function() {
+                $phonetwovalue = $(this).val();
+                if ($phonetwovalue < 0) {
+                    swal("Error!", "Phone number cannot have negative values!", "warning");
+                    $("#phonetwo").val('');
+                    document.getElementById('btnSave').disabled = true;
+                } else {
+                    if ($phonetwovalue.length > 10) {
+                        swal("Error!", "Phone number should contain only 10 digits!", "warning");
+                        $("#phonetwo").val('');
+                        document.getElementById('btnSave').disabled = true;
+                    } else if ($phonetwovalue.length == 9) {
+                        document.getElementById('btnSave').disabled = false;
+                    } else if ($phonetwovalue.length < 9) {
+                        document.getElementById('btnSave').disabled = true;
+                    }
+                }
+            });
+
+            $("#phonetwo").change(function() {
+                $phonetwovalue = $(this).val();
+                if ($phonetwovalue < 0) {
+                    swal("Error!", "Phone number cannot have negative values!", "warning");
+                    $("#phonetwo").val('');
+                    document.getElementById('btnSave').disabled = true;
+                } else {
+                    if ($phonetwovalue.length > 10) {
+                        swal("Error!", "Phone number should contain only 10 digits!", "warning");
+                        $("#phonetwo").val('');
+                        document.getElementById('btnSave').disabled = true;
+                    } else if ($phonetwovalue.length == 9) {
+                        document.getElementById('btnSave').disabled = false;
+                    } else if ($phonetwovalue.length < 9) {
+                        document.getElementById('btnSave').disabled = true;
+                    }
+                }
+            });
+
+            $("#fax").keyup(function() {
+                $faxvalue = $(this).val();
+                if ($faxvalue < 0) {
+                    swal("Error!", "Phone number cannot have negative values!", "warning");
+                    $("#fax").val('');
+                } else {
+                    if ($faxvalue.length > 10) {
+                        swal("Error!", "Phone number should contain only 10 digits!", "warning");
+                        $("#fax").val('');
+                    } else if ($faxvalue.length == 9) {} else if ($faxvalue.length < 9) {}
+                }
+            });
+
+            $("#fax").change(function() {
+                $faxvalue = $(this).val();
+                if ($faxvalue < 0) {
+                    swal("Error!", "Phone number cannot have negative values!", "warning");
+                    $("#fax").val('');
+                    document.getElementById('btnSave').disabled = true;
+                } else {
+                    if ($faxvalue.length > 10) {
+                        swal("Error!", "Phone number should contain only 10 digits!", "warning");
+                        $("#fax").val('');
+                        document.getElementById('btnSave').disabled = true;
+                    } else if ($faxvalue.length == 9) {
+                        document.getElementById('btnSave').disabled = false;
+                    } else if ($faxvalue.length < 9) {
+                        document.getElementById('btnSave').disabled = true;
+                    }
+                }
             });
 
             $('#allSuppliers tbody').on('click', '.btn-primary', function() {
@@ -358,17 +540,13 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                             }, function(data) {
                                 setTimeout(() => {
                                     location.reload();
-                                }, 2100);
+                                }, 2050);
                                 swal({
                                     type: 'success',
                                     title: 'Supplier deleted!',
                                     text: 'Supplier details succesfully deleted!',
                                     showConfirmButton: false,
                                     timer: 2000
-                                }).then((result) => {
-                                    if (result.dismiss === Swal.DismissReason.timer) {
-                                        $("#new_reminder").modal("hide");
-                                    }
                                 });
                             });
                         } else {
@@ -378,14 +556,57 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                 text: 'Supplier details remain!',
                                 showConfirmButton: false,
                                 timer: 2000
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
                             });
                         }
                     });
             });
+
+
+            $('#deletedSuppliers tbody').on('click', '.btn-reactivate', function() {
+
+                this.click;
+                $trID = $(this).attr('id');
+
+                swal({
+                        title: "Reactivate Supplier : " + $trID + "?",
+                        text: "You will restore " + $trID + "'s data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Delete",
+                        confirmButtonColor: "#000000",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.get("../../route/supplier/reactivateSupplier.php", {
+                                id: $trID
+                            }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
+                                swal({
+                                    type: 'success',
+                                    title: 'Supplier deleted!',
+                                    text: 'Supplier details succesfully deleted!',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            });
+                        } else {
+                            swal({
+                                type: 'warning',
+                                title: 'Cancelled!',
+                                text: 'Supplier details remain!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }
+                    });
+            });
+
 
             $("#btnSave").click(function() {
                 $.ajax({
@@ -403,11 +624,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                 text: 'New supplier has been successfully registered',
                                 showConfirmButton: false,
                                 timer: 2000
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
-                            });
+                            })
                         } else {
                             swal("Check your inputs!", "Kindly check whether all the mandatory fields have been filled out", "warning");
                         }

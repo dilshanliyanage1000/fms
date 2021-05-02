@@ -3,9 +3,7 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 3)) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 3 || $_SESSION['user_role'] == 4)) {
 
 ?>
     <br>
@@ -164,14 +162,14 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
 
                                             var logged_user = $("#logged_user").val();
 
-                                            $.post("../../route/request_notes/updateproducionbyrequestid.php", {
+                                            $.post("../../route/req_notes/updateproductionbyrequestid.php", {
                                                 requestID: requestID,
                                                 updation_date: updation_date,
                                                 logged_user: logged_user
                                             }, function(data) {
                                                 if (data == 'success') {
                                                     setTimeout(() => {
-                                                        window.location.href = './production_history.php';
+                                                        window.location.href = '../production_history/production_history.php';
                                                     }, 2600);
                                                     swal({
                                                         type: 'success',

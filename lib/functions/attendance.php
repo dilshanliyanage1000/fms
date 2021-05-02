@@ -18,7 +18,12 @@ function SearchEmp($search)
                     WHERE emp_id LIKE '%$search%' OR
                     emp_fname LIKE '%$search%' OR
                     emp_lname LIKE '%$search%' OR
-                    emp_nic LIKE '%$search%';";
+                    emp_nic LIKE '%$search%' OR
+                    emp_telno LIKE '%$search%' OR
+                    emp_telno_2 LIKE '%$search%' OR
+                    emp_address LIKE '%$search%' OR
+                    emp_email LIKE '%$search%'
+                    AND emp_status = 1;";
 
     $searchQuery = mysqli_query($conn, $searchSql);
 
@@ -67,7 +72,7 @@ function EmpData($empId)
     // call the connection
     $conn = Connection();
 
-    $selectEmp = "SELECT * FROM emp_tbl WHERE emp_id = '$empId';";
+    $selectEmp = "SELECT * FROM emp_tbl WHERE emp_id = '$empId' AND emp_status = 1;";
 
     $empResult = mysqli_query($conn, $selectEmp);
 

@@ -69,7 +69,7 @@
             <!--header menu start-->
             <div class="header" style="box-shadow: 0 0 10px #b3b3b3; z-index: 100;">
                 <div class="header-menu">
-                    <a href="../dashboard/admin.php"><img class="img-responsive2" src="../../../img/logo.png" style="width:200px"></img></a>
+                    <a href="../dashboard/supervisor.php"><img class="img-responsive2" src="../../../img/logo.png" style="width:200px"></img></a>
                     <div class="sidebar-btn">
                         <i id="sidebar_btn" class="fas fa-bars fa-1x"></i>
                     </div>
@@ -90,7 +90,7 @@
             <div class="sidebar">
                 <div class="sidebar-menu" style="margin-left: 5px;">
                     <li class="item">
-                        <a href="../dashboard/admin.php" class="menu-btn" id="textzoom">
+                        <a href="../dashboard/supervisor.php" class="menu-btn" id="textzoom">
                             <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
                         </a>
                     </li>
@@ -104,14 +104,6 @@
                         </div>
                     </li>
                     <hr>
-                    <li class="item" id="attendance">
-                        <a href="#attendance" class="menu-btn" id="textzoom">
-                            <i class="fas fa-check-double"></i><span>Attendance<i class="fas fa-chevron-down drop-down"></i></span>
-                        </a>
-                        <div class="sub-menu">
-                            <a href="../attendance/attendance.php"><i class="fas fa-check-double"></i><span>Mark Attendance</span></a>
-                        </div>
-                    </li>
                     <li class="item" id="quotation">
                         <a href="#quotation" class="menu-btn" id="textzoom">
                             <i class="far fa-clipboard"></i><span>Quotations<i class="fas fa-chevron-down drop-down"></i></span>
@@ -119,17 +111,6 @@
                         <div class="sub-menu">
                             <a href="../quotation/add_quotation.php"><i class="far fa-clipboard"></i><span>Create Quotation</span></a>
                             <a href="../quotation/quotation_list.php"><i class="far fa-clipboard"></i><span>Past Quotations</span></a>
-                        </div>
-                    </li>
-                    <li class="item" id="reqNotes">
-                        <a href="#reqNotes" class="menu-btn" id="textzoom">
-                            <i class="fas fa-plus"></i><span>Request Notes<i class="fas fa-chevron-down drop-down"></i></span>
-                        </a>
-                        <div class="sub-menu">
-                            <a href="../request_notes/rm_request.php"><i class="fas fa-plus"></i><span>Raw Material Request</span></a>
-                            <a href="../request_notes/part_production_request.php"><i class="fas fa-plus"></i><span>Part Production Request</span></a>
-                            <a href="../request_notes/production_req_form.php"><i class="fas fa-plus"></i><span>Production Request</span></a>
-                            <a href="../request_notes/allrequests.php"><i class="far fa-question-circle"></i><span>All Requests</span></a>
                         </div>
                     </li>
                     <li class="item" id="order_management">

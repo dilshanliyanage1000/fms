@@ -54,7 +54,7 @@ function ViewWarehouse()
 
     $conn = Connection();
 
-    $view_sql = "SELECT * FROM warehouse_tbl ORDER BY wh_id DESC ;";
+    $view_sql = "SELECT * FROM warehouse_tbl WHERE wh_status = 1 ORDER BY wh_id DESC ;";
 
     $view_result = mysqli_query($conn, $view_sql);
 
@@ -84,6 +84,48 @@ function ViewWarehouse()
 
             echo ("<td style='text-align:center;'><button id=" . $rec['wh_id'] . " class='btn btn-success btn-sm' data-toggle='modal' data-target='#editModal'>Edit</button></td>");
             echo ("<td style='text-align:center;'><button id=" . $rec['wh_id'] . " class='btn btn-danger btn-sm'>Delete</button></td>");
+            echo ("</tr>");
+        }
+    } else {
+        echo (" No record found");
+    }
+}
+
+//view warehouse details 
+function deletedWarehouses()
+{
+
+    $conn = Connection();
+
+    $view_sql = "SELECT * FROM warehouse_tbl WHERE wh_status = 0 ORDER BY wh_id DESC ;";
+
+    $view_result = mysqli_query($conn, $view_sql);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    //check no of records
+    $nor = mysqli_num_rows($view_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($view_result)) {
+            echo ("<td>" . $rec['wh_id'] . "</td>");
+            echo ("<td>" . $rec['wh_location'] . "</td>");
+            echo ("<td>" . $rec['wh_address'] . "</td>");
+            echo ("<td>" . $rec['wh_phone_one'] . "</td>");
+            echo ("<td>" . $rec['wh_phone_two'] . "</td>");
+            echo ("<td>" . $rec['wh_description'] . "</td>");
+
+            if ($rec['wh_status'] == 1) {
+                echo ("<td><span class='badge badge-pill badge-primary'>Active</span></td>");
+            } else {
+                echo ("<td><span class='badge badge-pill badge-danger'>Deactive</span></td>");
+            }
+
+            echo ("<td style='text-align:center;'><button id=" . $rec['wh_id'] . " class='btn btn-reactivate btn-secondary btn-sm'><i class='fas fa-sync'></i>&nbsp;Reactivate</button></td>");
             echo ("</tr>");
         }
     } else {
@@ -123,9 +165,8 @@ function editWarehouse($id, $location, $address, $phoneone, $phonetwo, $descript
 }
 
 //update the warehouse status from 1 to 0
-function updateStatus($whId)
+function deleteWarehouse($whId)
 {
-
     //connection
     $conn = Connection();
 
@@ -141,6 +182,29 @@ function updateStatus($whId)
 
     if ($update_result > 0) {
         return ("Deleted");
+    } else {
+        return false;
+    }
+}
+
+//update the warehouse status from 1 to 0
+function reactivateWarehouse($whId)
+{
+    //connection
+    $conn = Connection();
+
+    //update sql
+    $sql_update = "UPDATE warehouse_tbl SET wh_status = 1 WHERE wh_id = '$whId';";
+
+    $update_result = mysqli_query($conn, $sql_update);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    if ($update_result > 0) {
+        return ("Reactivated");
     } else {
         return false;
     }
@@ -176,7 +240,7 @@ function getWarehouse()
     $conn = Connection();
 
     //search SQL 
-    $sql_search = "SELECT * FROM warehouse_tbl;";
+    $sql_search = "SELECT * FROM warehouse_tbl WHERE wh_status = 1;";
 
     $search_result = mysqli_query($conn, $sql_search);
 
@@ -214,6 +278,7 @@ function whSearch($searchData)
                     wh_phone_one LIKE '%$searchData%' OR
                     wh_phone_two LIKE '%$searchData%' OR
                     wh_description LIKE '%$searchData%'
+                    WHERE wh_status = 1 
                     ORDER BY wh_id DESC;";
 
     $search_result = mysqli_query($conn, $sql_search);

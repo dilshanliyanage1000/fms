@@ -64,7 +64,8 @@ function ViewPart()
     $view_sql = "SELECT parts_tbl.part_id, parts_tbl.part_code, parts_tbl.part_name, product_tbl.prod_name, product_tbl.prod_motor_capacity, parts_tbl.part_weight, parts_tbl.part_w_unit, parts_tbl.part_unit_price, parts_tbl.part_reorder_level, parts_tbl.part_img_path, parts_tbl.part_status
                 FROM parts_tbl
                 INNER JOIN product_tbl
-                ON parts_tbl.prod_id = product_tbl.prod_id;";
+                ON parts_tbl.prod_id = product_tbl.prod_id
+                WHERE parts_tbl.part_status = 1;";
 
     $view_result = mysqli_query($conn, $view_sql);
 
@@ -104,6 +105,61 @@ function ViewPart()
 
             echo ("<td style='text-align:center;'><button id=" . $rec['part_id'] . " class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editModal'>Edit</button></td>");
             echo ("<td style='text-align:center;'><button id=" . $rec['part_id'] . " class='btn btn-danger btn-sm'>Delete</button></td>");
+            echo ("</tr>");
+        }
+    } else {
+        return (" No record found");
+    }
+}
+
+function DeletedParts()
+{
+
+    $conn = Connection();
+
+    $view_sql = "SELECT parts_tbl.part_id, parts_tbl.part_code, parts_tbl.part_name, product_tbl.prod_name, product_tbl.prod_motor_capacity, parts_tbl.part_weight, parts_tbl.part_w_unit, parts_tbl.part_unit_price, parts_tbl.part_reorder_level, parts_tbl.part_img_path, parts_tbl.part_status
+                FROM parts_tbl
+                INNER JOIN product_tbl
+                ON parts_tbl.prod_id = product_tbl.prod_id
+                WHERE parts_tbl.part_status = 0;";
+
+    $view_result = mysqli_query($conn, $view_sql);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    //check no of records
+    $nor = mysqli_num_rows($view_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($view_result)) {
+
+            echo ("<td>" . $rec['part_code'] . "</td>");
+
+            echo ("<td style='text-align: center'>
+                        <img id='zoom' src='" . $rec['part_img_path'] . "' alt='Part Image' class='responsive' style='height:80px; width:80px; margin-left:1px; margin-bottom:1px; margin-top:1px; margin-right:1px; border: 1px solid #eee;'>
+                    </td>");
+
+            echo ("<td>" . $rec['part_name'] . "</td>");
+
+            echo ("<td>" . $rec['prod_name'] . " (" . $rec['prod_motor_capacity'] . ")</td>");
+
+            echo ("<td style='text-align: center'>" . $rec['part_weight'] . $rec['part_w_unit'] . "</td>");
+
+            echo ("<td style='text-align: right'><b>Rs. " . number_format($rec['part_unit_price']) . ".00</b></td>");
+
+            echo ("<td style='text-align: center'>" . $rec['part_reorder_level'] . " unit(s)</td>");
+
+            if ($rec['part_status'] == 1) {
+                echo ("<td style='text-align:center;'><span class='badge badge-pill badge-primary'>Active</span></td>");
+            } else {
+                echo ("<td style='text-align:center;'><span class='badge badge-pill badge-danger'>Removed</span></td>");
+            }
+
+            echo ("<td style='text-align:center;'><button id=" . $rec['part_id'] . " class='btn btn-secondary btn-reactivate btn-sm'><i class='fas fa-sync'></i>&nbsp;Reactivate</button></td>");
             echo ("</tr>");
         }
     } else {
@@ -162,7 +218,6 @@ function editPart($file_name, $file_path, $id, $name, $partcode, $weight, $w_uni
 //update the part status from 1 to 0
 function updatePartStatus($partID)
 {
-
     //connection
     $conn = Connection();
 
@@ -178,6 +233,29 @@ function updatePartStatus($partID)
 
     if ($update_result > 0) {
         return ("Deleted");
+    } else {
+        return false;
+    }
+}
+
+//update the part status from 1 to 0
+function reactivatePart($partID)
+{
+    //connection
+    $conn = Connection();
+
+    //update sql
+    $sql_update = "UPDATE parts_tbl SET part_status = 1 WHERE part_id = '$partID';";
+
+    $update_result = mysqli_query($conn, $sql_update);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    if ($update_result > 0) {
+        return ("reactivated");
     } else {
         return false;
     }

@@ -491,9 +491,30 @@ function getEachPartoRMonReq($tableData)
 
                 $rmUnit = $rec["rm_w_unit"];
 
+                //-------------------------------------------
+
+                $rmQty = $rec["rm_qty"];
+
+                $rmUnit = $rec["rm_w_unit"];
+
+                if ($rmUnit == 'mg') {
+
+                    $rmQty = ($rec["rm_qty"] / 1000) / 1000;
+
+                } else if ($rmUnit == 'g') {
+
+                    $rmQty = ($rec["rm_qty"] / 1000);
+
+                } else if ($rmUnit == 'kg') {
+
+                    $rmQty = $rec["rm_qty"];
+                }
+
+                //-----------------------------------------------
+
                 $outputText .= '<td>' . $rmName . '</td>';
 
-                $outputText .= '<td>~&nbsp;&nbsp;' . $rmQty . $rmUnit . '</td>';
+                $outputText .= '<td>~&nbsp;&nbsp;' . $rmQty . 'kg</td>';
 
                 $outputText .= '<td style="text-align:center;">&nbsp;<i class="fas fa-long-arrow-alt-right"></i>&nbsp;</td>';
 
@@ -501,7 +522,7 @@ function getEachPartoRMonReq($tableData)
 
                 $outputText .= '<td>' . $rmName . '</td>';
 
-                $outputText .= '<td>~&nbsp;&nbsp;' . $newQty . $rmUnit . '</td>';
+                $outputText .= '<td>~&nbsp;&nbsp;' . $newQty . 'kg</td>';
 
                 $outputText .= '</tr>';
 
@@ -515,7 +536,7 @@ function getEachPartoRMonReq($tableData)
                     $sqlupdate = "UPDATE temp_rawmat_qty_tbl SET rm_qty = rm_qty + $newQty WHERE rm_id = '$rmID';";
                     $updateResult = mysqli_query($conn, $sqlupdate);
                 } else {
-                    $sqlinsert = "INSERT INTO temp_rawmat_qty_tbl VALUES ('$rmID','$newQty','$rmUnit');";
+                    $sqlinsert = "INSERT INTO temp_rawmat_qty_tbl VALUES ('$rmID','$newQty','kg');";
                     $insertResult = mysqli_query($conn, $sqlinsert);
                 }
             }
@@ -802,7 +823,7 @@ function DelProdtoPart($id)
 {
     $conn = Connection();
 
-    $deleteSQL = "DELETE FROM part_prod_tbl WHERE prod_id = '$id';";
+    $deleteSQL = "UPDATE part_prod_tbl SET ptpr_status = 0 WHERE prod_id = '$id';";
 
     $runSQL = mysqli_query($conn, $deleteSQL);
 
@@ -819,7 +840,7 @@ function DelParttoRM($id)
 {
     $conn = Connection();
 
-    $deleteSQL = "DELETE FROM rm_part_tbl WHERE part_id = '$id';";
+    $deleteSQL = "UPDATE rm_part_tbl SET rmpt_status = 0 WHERE part_id = '$id';";
 
     $runSQL = mysqli_query($conn, $deleteSQL);
 

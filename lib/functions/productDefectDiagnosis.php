@@ -265,13 +265,11 @@ function getProdDiag()
                         <div class="card-body">
                             <h6 class="card-subtitle mb-2 text-muted">' . $rec["prod_name"] . ' (' . $rec["prod_motor_capacity"] . ')</h6>
                             <hr class="my-4">
-                            <p class="card-text">' . $dateOnly . ' @ ' . $timeOnly . '</br>Customer : ' . $rec["cus_first_name"] . ' ' . $rec["cus_last_name"] . '</p>
+                            <h6>' . $dateOnly . ' @ ' . $timeOnly . '</br></br>Customer : ' . $rec["cus_first_name"] . ' ' . $rec["cus_last_name"] . '</h6>
+                            </br>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <button type="button" id="' . $rec["diag_id"] . '" class="btn btn-primary btn-block btn-load-img"><i class="fas fa-folder-plus"></i>&nbsp;&nbsp;Load</button>
-                                </div>
-                                <div class="col-md-6">
-                                    <button type="button" id="' . $rec["diag_id"] . '" class="btn btn-danger btn-block btn-delete-diag""><i class="fas fa-trash"></i>&nbsp;&nbsp;Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -341,7 +339,7 @@ function finalizeDiagnosis($diagid, $warrantyStatus, $prodEligibility, $repairco
 
     $conn = Connection();
 
-    $id = Auto_id("pfd_id ", "product_diag_finalized_tbl", "PFD");
+    $id = Auto_id("pfd_id", "product_diag_finalized_tbl", "PFD");
 
     $searchSql = "INSERT INTO product_diag_finalized_tbl(pfd_id,diag_id,pfd_warranty_stt,pfd_eligibility,pfd_repair_cost,pfd_prod_condition,pfd_final_diag,pfd_status)
                     VALUES('$id','$diagid','$warrantyStatus','$prodEligibility','$repaircost','$prodCondition','$finalDiag',1);";
@@ -363,6 +361,7 @@ function finalizeDiagnosis($diagid, $warrantyStatus, $prodEligibility, $repairco
     }
 }
 
+
 function DiagnosisList()
 {
     $conn = Connection();
@@ -374,7 +373,63 @@ function DiagnosisList()
                     INNER JOIN product_tbl
                     ON product_diagnosis_tbl.prod_id = product_tbl.prod_id)
                     INNER JOIN product_diag_finalized_tbl
-                    ON product_diag_finalized_tbl.diag_id = product_diagnosis_tbl.diag_id);";
+                    ON product_diag_finalized_tbl.diag_id = product_diagnosis_tbl.diag_id)
+                    WHERE product_diag_finalized_tbl.pfd_status = 1;";
+
+    $view_result = mysqli_query($conn, $view_sql);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    //check no of records
+    $nor = mysqli_num_rows($view_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($view_result)) {
+
+            echo ("<td>" . $rec['diag_id'] . "</td>");
+
+            $datearr = explode(" ", $rec['diag_uploaded_date']);
+            $dateOnly = $datearr[0];
+
+            echo ("<td>" . $dateOnly . "</td>");
+
+            echo ("<td>" . $rec['cus_first_name'] . "&nbsp;" . $rec['cus_last_name'] . "</td>");
+            echo ("<td>[" . $rec['prod_code'] . "]&nbsp;" . $rec['prod_name'] . "&nbsp;(" . $rec['prod_motor_capacity'] . ")</td>");
+            echo ("<td>
+                        <img id='img_1' style='width:80px;' src='" . $rec['img_1'] . "' />
+                    </td>");
+
+            echo ("<td>
+                        <img id='img_2' style='width:80px;' src='" . $rec['img_2'] . "' />
+                    </td>");
+
+            echo ("<td style='text-align: center;'><a href='" . $rec['pfd_pdf_path'] . "' target='_blank'><button class='btn btn-info btn-sm btn-block' style='width:100%'><i class='fas fa-file-signature'></i>&nbsp;&nbsp;View Report</button></a></td>");
+
+            echo ("<td style='text-align:center;'><button id=" . $rec['diag_id'] . " class='btn btn-danger btn-delete btn-sm btn-block'><i class='fas fa-trash'></i>&nbsp;&nbsp;Delete</button></td>");
+            echo ("</tr>");
+        }
+    } else {
+        return (" No record found");
+    }
+}
+
+function DeletedDiagnosisList()
+{
+    $conn = Connection();
+
+    $view_sql = "SELECT product_diagnosis_tbl.diag_id, cus_tbl.cus_first_name, cus_tbl.cus_last_name, product_tbl.prod_code, product_tbl.prod_name, product_tbl.prod_motor_capacity, product_diagnosis_tbl.img_1, product_diagnosis_tbl.img_2, product_diag_finalized_tbl.pfd_pdf_path, product_diagnosis_tbl.diag_uploaded_date
+                    FROM (((product_diagnosis_tbl
+                    INNER JOIN cus_tbl
+                    ON product_diagnosis_tbl.cus_id = cus_tbl.cus_id)
+                    INNER JOIN product_tbl
+                    ON product_diagnosis_tbl.prod_id = product_tbl.prod_id)
+                    INNER JOIN product_diag_finalized_tbl
+                    ON product_diag_finalized_tbl.diag_id = product_diagnosis_tbl.diag_id)
+                    WHERE product_diag_finalized_tbl.pfd_status = 0;";
 
     $view_result = mysqli_query($conn, $view_sql);
 
@@ -414,6 +469,87 @@ function DiagnosisList()
         }
     } else {
         return (" No record found");
+    }
+}
+
+
+function deletedPreDiagnosis()
+{
+    $conn = Connection();
+
+    $view_sql = "SELECT product_diagnosis_tbl.diag_id, cus_tbl.cus_first_name, cus_tbl.cus_last_name, product_tbl.prod_name, product_tbl.prod_code, product_tbl.prod_motor_capacity, product_diagnosis_tbl.cus_statement, product_diagnosis_tbl.img_1, product_diagnosis_tbl.img_2, product_diagnosis_tbl.diag_uploaded_date, product_diagnosis_tbl.diag_check_status, product_diagnosis_tbl.diag_status
+                    FROM ((product_diagnosis_tbl
+                    INNER JOIN cus_tbl
+                    ON product_diagnosis_tbl.cus_id = cus_tbl.cus_id)
+                    INNER JOIN product_tbl
+                    ON product_diagnosis_tbl.prod_id = product_tbl.prod_id)
+                    WHERE product_diagnosis_tbl.diag_status = '0';";
+
+    $view_result = mysqli_query($conn, $view_sql);
+
+    //validate the command
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    //check no of records
+    $nor = mysqli_num_rows($view_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($view_result)) {
+
+            echo ("<td>" . $rec['diag_id'] . "</td>");
+
+            $datearr = explode(" ", $rec['diag_uploaded_date']);
+            $dateOnly = $datearr[0];
+
+            echo ("<td>" . $dateOnly . "</td>");
+
+            echo ("<td>" . $rec['cus_first_name'] . "&nbsp;" . $rec['cus_last_name'] . "</td>");
+
+            echo ("<td>[" . $rec['prod_code'] . "]&nbsp;" . $rec['prod_name'] . "&nbsp;(" . $rec['prod_motor_capacity'] . ")</td>");
+
+            echo ("<td>
+                        <img id='img_1' style='width:80px;' src='" . $rec['img_1'] . "' />
+                    </td>");
+
+            echo ("<td>
+                        <img id='img_2' style='width:80px;' src='" . $rec['img_2'] . "' />
+                    </td>");
+
+            echo ("<td style='text-align:center;'><span class='badge badge-pill badge-danger'>Deactive</span></td>");
+
+            echo ("</tr>");
+        }
+    } else {
+        return (" No record found");
+    }
+}
+
+function deleteDiagnosis($id)
+{
+    $conn = Connection();
+
+    $checkSQL = "SELECT * FROM product_diagnosis_tbl WHERE diag_id = '$id';";
+
+    $runSQL = mysqli_query($conn, $checkSQL);
+
+    $nor = mysqli_num_rows($runSQL);
+
+    if ($nor > 0) {
+
+        $delSQL = "UPDATE product_diagnosis_tbl SET diag_status = 0 WHERE diag_id = '$id';";
+
+        $runDel = mysqli_query($conn, $delSQL);
+
+        if ($runDel > 0) {
+            echo ("success");
+        } else {
+            echo ("error");
+        }
+    } else {
+        echo ("No records found!!!");
     }
 }
 

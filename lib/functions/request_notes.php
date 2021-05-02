@@ -702,6 +702,7 @@ function updateProductionbyRQST($requestID, $date, $loggedUser)
             $nofrows = mysqli_num_rows($runListQuery);
 
             if ($nofrows > 0) {
+
                 while ($record = mysqli_fetch_assoc($runListQuery)) {
 
                     $partID = $record['part_id'];
@@ -721,12 +722,16 @@ function updateProductionbyRQST($requestID, $date, $loggedUser)
 
                     $newID = Auto_id("ptph_id", "prt_production_history_tbl", "PTH");
 
-                    $insertSQL = "INSERT INTO prt_production_history_tbl
-                                    VALUES ('$newID','$requestID','$empID','$loggedUser','$partID','$preQty','$partQty','$postQty','$date','',1);";
+                    $insertSQL = "INSERT INTO prt_production_history_tbl(ptph_id,rqst_id,emp_id,user_id,part_id,part_pre_qty,part_qty,post_part_qty,ptph_date,ptph_status)
+                                        VALUES ('$newID','$requestID','$empID','$loggedUser','$partID','$preQty','$partQty','$postQty','$date',1);";
 
                     $runfinalQuery = mysqli_query($conn, $insertSQL);
 
-                    if ($runfinalQuery > 0) {
+                    $updateStock = "UPDATE stock_part_tbl SET part_qty = part_qty + $partQty WHERE part_id = '$partID';";
+
+                    $runstockQuery = mysqli_query($conn, $updateStock);
+
+                    if ($runfinalQuery > 0 && $runstockQuery > 0) {
                         echo ("success");
                     } else {
                         return ("error");
@@ -749,6 +754,7 @@ function updateProductionbyRQST($requestID, $date, $loggedUser)
                 while ($record = mysqli_fetch_assoc($runListQuery)) {
 
                     $prodID = $record['prod_id'];
+                    
                     $prodQty = $record['rqpr_qty'];
 
                     $getprestockQty = "SELECT prod_qty FROM stock_prod_tbl WHERE prod_id = '$prodID';";
@@ -765,12 +771,16 @@ function updateProductionbyRQST($requestID, $date, $loggedUser)
 
                     $newID = Auto_id("pph_id", "prd_production_history_tbl", "PPH");
 
-                    $insertSQL = "INSERT INTO prd_production_history_tbl
-                                    VALUES ('$newID','$requestID','$empID','$loggedUser','$prodID','$preQty','$prodQty','$postQty','$date','',1);";
+                    $insertSQL = "INSERT INTO prd_production_history_tbl(pph_id,rqst_id,emp_id,user_id,prod_id,prod_pre_qty,prod_qty,prod_post_qty,pph_date,pph_status)
+                                    VALUES ('$newID','$requestID','$empID','$loggedUser','$prodID','$preQty','$prodQty','$postQty','$date',1);";
 
                     $runfinalQuery = mysqli_query($conn, $insertSQL);
 
-                    if ($runfinalQuery > 0) {
+                    $updateStock = "UPDATE stock_prod_tbl SET prod_qty = prod_qty + $prodQty WHERE prod_id = '$prodID';";
+
+                    $runstockQuery = mysqli_query($conn, $updateStock);
+
+                    if ($runfinalQuery > 0 && $runstockQuery > 0) {
                         echo ("success");
                     } else {
                         return ("error");
@@ -797,6 +807,141 @@ function requestList()
                     ON request_tbl.emp_id = emp_tbl.emp_id)
                     INNER JOIN notification_tbl
                     ON notification_tbl.rqst_id = request_tbl.rqst_id)
+                    ) as t1, (
+                    SELECT user_tbl.user_id, CONCAT(emp_tbl.emp_fname,' ',emp_tbl.emp_lname) AS creator
+                    FROM user_tbl
+                    INNER JOIN emp_tbl
+                    ON user_tbl.emp_id = emp_tbl.emp_id
+                    ) as t2
+                    WHERE t1.user_id = t2.user_id;";
+
+    $runQuery = mysqli_query($conn, $requestlist);
+
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    $nor = mysqli_num_rows($runQuery);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($runQuery)) {
+
+            echo ("<td>" . $rec["rqst_id"] . "</td>");
+
+            if ($rec['rqst_type'] == 'RM-REQUEST') {
+
+                echo ("<td>Raw Material Request</td>");
+
+                echo ("<td style='text-align:center;'>" . $rec['requester'] . "</td>");
+
+                $str = $rec['notif_body'];
+
+                $text = explode("Request includes raw materials of ", $str)[1];
+
+                $body = explode(". ", $text);
+
+                $bdtext = '';
+
+                foreach ($body as $row) {
+
+                    if ($row == " " || $row == "") {
+                    } else {
+                        $bdtext .= '#&nbsp;' . $row . '<br><br>';
+                    }
+                }
+
+                echo ("<td>" . $bdtext . "</td>");
+            } else if ($rec['rqst_type'] == 'PRODUCTION-REQUEST') {
+
+                echo ("<td>Production Request</td>");
+
+                echo ("<td style='text-align:center;'>" . $rec['requester'] . "</td>");
+
+                $str = $rec['notif_body'];
+
+                $text = explode("Request includes production request of ", $str)[1];
+
+                $body = explode(". ", $text);
+
+                $bdtext = '';
+
+                foreach ($body as $row) {
+
+                    if ($row == " " || $row == "") {
+                    } else {
+                        $bdtext .= '#&nbsp;' . $row . '<br><br>';
+                    }
+                }
+
+                echo ("<td>" . $bdtext . "</td>");
+            } else if ($rec['rqst_type'] == 'PART-PRODUCTION-REQUEST') {
+
+                echo ("<td>Part Production Request</td>");
+
+                echo ("<td style='text-align:center;'>" . $rec['requester'] . "</td>");
+
+                $str = $rec['notif_body'];
+
+                $text = explode("Request includes part production request of ", $str)[1];
+
+                $body = explode(". ", $text);
+
+                $bdtext = '';
+
+                foreach ($body as $row) {
+
+                    if ($row == " " || $row == "") {
+                    } else {
+                        $bdtext .= '#&nbsp;' . $row . '<br><br>';
+                    }
+                }
+
+                echo ("<td>" . $bdtext . "</td>");
+            }
+
+            echo ("<td style='text-align:center;'>" . $rec['creator'] . "</td>");
+
+            echo ("<td style='text-align:center;'>" . $rec['notif_date'] . "</td>");
+
+            echo ("<td style='text-align:center;'>" . $rec['notif_accepted_date'] . "</td>");
+
+            if ($rec['rqst_pdf'] !== '') {
+                echo ("<td style='text-align:center;'>
+                        <a href='" . $rec['rqst_pdf'] . "' target='_blank'><button class='btn btn-info btn-sm' style='width:100%;'><i class='fas fa-file-signature'></i></button></a>
+                    </td>");
+            } else {
+                echo ("<td style='text-align:center;'>-</td>");
+            }
+
+            if ($rec['rqst_status'] == 'Pending') {
+                echo ("<td style='text-align:center;'><span class='badge badge-pill badge-warning'>Pending</span></td>");
+            } else if ($rec['rqst_status'] == 'Confirmed') {
+                echo ("<td style='text-align:center;'><span class='badge badge-pill badge-success'>Confirmed</span></td>");
+            } else {
+                echo ("<td style='text-align:center;'><span class='badge badge-pill badge-danger'>Declined</span></td>");
+            }
+
+            echo ("</tr>");
+        }
+    } else {
+        return (" No record found");
+    }
+}
+
+function customRequestsList($filter)
+{
+    $conn = Connection();
+
+    $requestlist = "SELECT t1.rqst_id, t1.rqst_type, t1.requester, t1.rqst_pdf, t1.rqst_status, t1.notif_body, t1.notif_date, t1.notif_accepted_date, t2.creator
+                    FROM (
+                    SELECT request_tbl.rqst_id, request_tbl.rqst_type, CONCAT(emp_tbl.emp_fname, ' ', emp_tbl.emp_lname) AS requester, request_tbl.user_id, request_tbl.rqst_status, request_tbl.rqst_pdf, notification_tbl.notif_body, notification_tbl.notif_date, notification_tbl.notif_accepted_date
+                    FROM ((request_tbl
+                    INNER JOIN emp_tbl
+                    ON request_tbl.emp_id = emp_tbl.emp_id)
+                    INNER JOIN notification_tbl
+                    ON notification_tbl.rqst_id = request_tbl.rqst_id)
+                    WHERE request_tbl.rqst_status = '$filter'
                     ) as t1, (
                     SELECT user_tbl.user_id, CONCAT(emp_tbl.emp_fname,' ',emp_tbl.emp_lname) AS creator
                     FROM user_tbl
@@ -1042,5 +1187,3 @@ function getRQSTdetailsbyID($value)
         }
     }
 }
-
-?>

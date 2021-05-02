@@ -48,7 +48,7 @@
     <script type="text/javascript" src="../../../js/bootstrap.min.js"></script>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <!-- chart js scripts -->
@@ -62,7 +62,7 @@
 
     <!-- sweet alert script -->
     <script type="text/javascript" src="../../../css/sweetalert/dist/sweetalert.js"></script>
-    
+
     <script type="text/javascript" src="../../../css/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- js validation -->
@@ -86,3 +86,17 @@
 </head>
 
 <body>
+
+    <?php
+
+    if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1)) {
+        include_once('../../inc/sidenav.php');
+    } else if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 2)) {
+        include_once('../../inc/sidenav_manager.php');
+    } else if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 3)) {
+        include_once('../../inc/sidenav_supervisor.php');
+    } else if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 4)) {
+        include_once('../../inc/sidenav_inoffice.php');
+    }
+
+    ?>

@@ -3,9 +3,7 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2 || $_SESSION['user_role'] == 4)) {
 
 ?>
 
@@ -16,6 +14,10 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
 
         #zoom:hover {
             transform: scale(1.5);
+        }
+
+        .cancel {
+            background-color: #FFCE67;
         }
     </style>
 
@@ -121,30 +123,68 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
         <div class="jumbotron">
             <h1 class="display-5" style="text-align: center;"><i class="fas fa-users fa-1x"></i>&nbsp;&nbsp;Employee Information</h1>
             <hr class="my-4">
-            <table id="allEmployees" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th style="min-width: 50px;">ID</th>
-                        <th>Profile</th>
-                        <th style="min-width: 150px;">Name</th>
-                        <th style="min-width: 100px;">Job Role</th>
-                        <th style="min-width: 80px;">NIC</th>
-                        <th style="min-width: 90px;">Contact No</th>
-                        <th style="min-width: 100px;">Address</th>
-                        <th style="min-width: 100px;">Email</th>
-                        <th style="min-width: 40px;">Status</th>
-                        <th style="min-width: 35px;">QR</th>
-                        <th style="min-width: 40px;">Edit</th>
-                        <th style="min-width: 40px;">Delete</th>
-                    </tr>
-                </thead>
-                <tbody id="search_body_result">
-                    <?php
-                    include_once('../../functions/employee.php');
-                    ViewEmployee();
-                    ?>
-                </tbody>
-            </table>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#employeelist">All Employees</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#employeeDeleted">Deleted Employees</a>
+                </li>
+            </ul>
+            <br>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade show active" id="employeelist">
+                    <table id="allEmployees" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th style="min-width: 50px;">ID</th>
+                                <th>Profile</th>
+                                <th style="min-width: 150px;">Name</th>
+                                <th style="min-width: 100px;">Job Role</th>
+                                <th style="min-width: 80px;">NIC</th>
+                                <th style="min-width: 90px;">Contact No</th>
+                                <th style="min-width: 100px;">Address</th>
+                                <th style="min-width: 100px;">Email</th>
+                                <th style="min-width: 40px;">Status</th>
+                                <th style="min-width: 35px;">QR</th>
+                                <th style="min-width: 40px;">Edit</th>
+                                <th style="min-width: 40px;">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/employee.php');
+                            ViewEmployee();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="employeeDeleted">
+                    <table id="deletedEmployees" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th style="min-width: 50px;">ID</th>
+                                <th>Profile</th>
+                                <th style="min-width: 150px;">Name</th>
+                                <th style="min-width: 100px;">Job Role</th>
+                                <th style="min-width: 80px;">NIC</th>
+                                <th style="min-width: 90px;">Contact No</th>
+                                <th style="min-width: 100px;">Address</th>
+                                <th style="min-width: 100px;">Email</th>
+                                <th style="min-width: 40px;">Status</th>
+                                <th style="min-width: 35px;">QR</th>
+                                <th style="min-width: 40px;">Reactivate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/employee.php');
+                            ViewDeletedEmployees();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -483,6 +523,45 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                 ]
             });
 
+            $("#deletedEmployees").DataTable({
+                "order": [
+                    [0, "desc"]
+                ],
+                dom: 'B<"clear">lfrtip',
+                buttons: [{
+                        extend: 'copyHtml5',
+                        text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>&nbsp;Export to Excel',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED EMPLOYEE LIST]"
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fas fa-file-csv"></i>&nbsp;Export to CSV',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED EMPLOYEE LIST]"
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i>&nbsp;Export to PDF',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                        },
+                        title: "Udaya Industries [REPORT: DELETED EMPLOYEE LIST]"
+                    }
+                ]
+            });
+
 
             //check edit button
             $('#allEmployees tbody').on('click', '.btn-success', function() {
@@ -604,29 +683,69 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                             $.get("../../route/employee/deleteEmployee.php", {
                                 id: $trID
                             }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
                                 swal({
                                     type: 'success',
                                     title: 'Employee deleted!',
                                     text: 'Employee details succesfully inactivated!',
                                     showConfirmButton: false,
                                     timer: 2000
-                                }).then((result) => {
-                                    if (result.dismiss === Swal.DismissReason.timer) {
-                                        $("#new_reminder").modal("hide");
-                                    }
                                 });
                             });
                         } else {
                             swal({
                                 type: 'warning',
                                 title: 'Cancelled!',
-                                text: 'Customer details remain!',
+                                text: 'Employee details remain!',
                                 showConfirmButton: false,
                                 timer: 2000
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
+                            });
+                        }
+                    });
+            });
+
+            $('#deletedEmployees tbody').on('click', '.btn-reactivate', function() {
+
+                this.click;
+                $trID = $(this).attr('id');
+
+                swal({
+                        title: "Reactivate Employee : " + $trID + "?",
+                        text: "You will restore " + $trID + "'s data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Delete",
+                        confirmButtonColor: "#000000",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.get("../../route/employee/reactivate_employee.php", {
+                                id: $trID
+                            }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
+                                swal({
+                                    type: 'success',
+                                    title: 'Employee Reactivated!',
+                                    text: 'Employee details succesfully restored!',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            });
+                        } else {
+                            swal({
+                                type: 'warning',
+                                title: 'Cancelled!',
+                                text: 'Employee details remain deleted!',
+                                showConfirmButton: false,
+                                timer: 2000
                             });
                         }
                     });

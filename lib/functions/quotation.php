@@ -90,19 +90,21 @@ function QuotationList()
 
         while ($rec = mysqli_fetch_assoc($view_result)) {
 
+            $description = rtrim($rec["qt_desc"], " / ");
+
             echo ("<td>" . $rec['qt_id'] . "</td>");
 
             echo ("<td>" . $rec['qt_date'] . "</td>");
 
-            echo ("<td><a href='" . $rec['qt_pdf_path'] . "' target='_blank'><button class='btn btn-primary'><i class='fas fa-file-signature'></i>&nbsp;&nbsp;View</button></a></td>");
+            echo ("<td><a href='" . $rec['qt_pdf_path'] . "' target='_blank'><button class='btn btn-primary btn-sm btn-block'><i class='fas fa-file-signature'></i>&nbsp;&nbsp;View</button></a></td>");
 
             echo ("<td>" . $rec['cus_first_name'] . "&nbsp;" . $rec['cus_last_name'] . "</br>" . $rec['cus_code_phoneone'] . "&nbsp;" . $rec['cus_phone_one'] . "</br>" . $rec['cus_email'] . "</br>" . $rec['cus_houseno'] . ", " . $rec['cus_street_one'] . ", " . $rec['cus_street_two'] . ", " . $rec['cus_city'] . "</td>");
 
-            echo ("<td>" . $rec["qt_desc"] . "</td>");
+            echo ("<td>" . $description . "</td>");
 
             if ($rec["qt_form_status"] == "Pending") {
 
-                echo ("<td><span class='badge badge-pill badge-primary'>" . $rec["qt_form_status"] . "</span></td>");
+                echo ("<td><span class='badge badge-pill badge-secondary'>" . $rec["qt_form_status"] . "</span></td>");
             } else if ($rec["qt_form_status"] == "Confirmed") {
 
                 echo ("<td><span class='badge badge-pill badge-success'>" . $rec["qt_form_status"] . "</span></td>");
@@ -110,13 +112,139 @@ function QuotationList()
 
             if ($rec["qt_form_status"] == "Pending") {
 
-                echo ("<td><button style='width:100%;' type='button' class='btn btn-success btn-sm btn-confirm-quotation' id='" . $rec['qt_id'] . "'><i class='icon-checkmark3'></i>Confirm</button></td>");
-                echo ("<td><button style='width:100%;' type='button' class='btn btn-danger btn-sm btn-delete-quotation' id='" . $rec['qt_id'] . "'><i class='icon-spinner11'></i>Delete</button></td>");
+                echo ("<td><button style='width:100%;' type='button' class='btn btn-success btn-sm btn-confirm-quotation' id='" . $rec['qt_id'] . "'><i class='fas fa-check'></i>&nbsp;&nbsp;Confirm</button></td>");
+                echo ("<td><button style='width:100%;' type='button' class='btn btn-danger btn-sm btn-delete-quotation' id='" . $rec['qt_id'] . "'><i class='fas fa-trash'></i>&nbsp;&nbsp;Delete</button></td>");
             } else if ($rec["qt_form_status"] == "Confirmed") {
 
-                echo ("<td><button style='width:100%;' type='button' class='btn btn-warning btn-sm btn-pending-quotation' id='" . $rec['qt_id'] . "'><i class='icon-checkmark3'></i>Change</button></td>");
-                echo ("<td><button style='width:100%;' type='button' class='btn btn-danger btn-sm btn-delete-quotation' id='" . $rec['qt_id'] . "'><i class='icon-spinner11'></i>Delete</button></td>");
+                echo ("<td><button style='width:100%;' type='button' class='btn btn-secondary btn-sm btn-pending-quotation' id='" . $rec['qt_id'] . "'><i class='fas fa-redo'></i>&nbsp;&nbsp;Change</button></td>");
+                echo ("<td><button style='width:100%;' type='button' class='btn btn-danger btn-sm btn-delete-quotation' id='" . $rec['qt_id'] . "'><i class='fas fa-trash'></i>&nbsp;&nbsp;Delete</button></td>");
             }
+
+            echo ("</tr>");
+        }
+    } else {
+        return (" No record found");
+    }
+}
+
+function ConfirmedQuotationList()
+{
+    $conn = Connection();
+
+    $view_sql = "SELECT cus_tbl.cus_first_name,
+                        cus_tbl.cus_last_name,
+                        cus_tbl.cus_email,
+                        cus_tbl.cus_code_phoneone,
+                        cus_tbl.cus_phone_one,
+                        cus_tbl.cus_code_phonetwo,
+                        cus_tbl.cus_phone_two,
+                        cus_tbl.cus_houseno,
+                        cus_tbl.cus_street_one,
+                        cus_tbl.cus_street_two,
+                        cus_tbl.cus_city,
+                        cus_tbl.cus_postal_code,
+                        quotation_tbl.qt_id,
+                        quotation_tbl.qt_pdf_path,
+                        quotation_tbl.qt_date,
+                        quotation_tbl.qt_form_status,
+                        quotation_tbl.qt_desc
+                FROM cus_tbl
+                INNER JOIN quotation_tbl
+                ON cus_tbl.cus_id = quotation_tbl.cus_id
+                WHERE qt_status = 1 AND qt_form_status = 'Confirmed';";
+
+    $view_result = mysqli_query($conn, $view_sql);
+
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    $nor = mysqli_num_rows($view_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($view_result)) {
+
+            $description = rtrim($rec["qt_desc"], " / ");
+
+            echo ("<td>" . $rec['qt_id'] . "</td>");
+
+            echo ("<td>" . $rec['qt_date'] . "</td>");
+
+            echo ("<td><a href='" . $rec['qt_pdf_path'] . "' target='_blank'><button class='btn btn-primary btn-sm btn-block'><i class='fas fa-file-signature'></i>&nbsp;&nbsp;View</button></a></td>");
+
+            echo ("<td>" . $rec['cus_first_name'] . "&nbsp;" . $rec['cus_last_name'] . "</br>" . $rec['cus_code_phoneone'] . "&nbsp;" . $rec['cus_phone_one'] . "</br>" . $rec['cus_email'] . "</br>" . $rec['cus_houseno'] . ", " . $rec['cus_street_one'] . ", " . $rec['cus_street_two'] . ", " . $rec['cus_city'] . "</td>");
+
+            echo ("<td>" . $description . "</td>");
+
+            if ($rec["qt_form_status"] == "Pending") {
+
+                echo ("<td><span class='badge badge-pill badge-secondary'>" . $rec["qt_form_status"] . "</span></td>");
+            } else if ($rec["qt_form_status"] == "Confirmed") {
+
+                echo ("<td><span class='badge badge-pill badge-success'>" . $rec["qt_form_status"] . "</span></td>");
+            }
+
+            echo ("<td><button style='width:100%;' type='button' class='btn btn-danger btn-sm btn-delete-quotation' id='" . $rec['qt_id'] . "'><i class='fas fa-trash'></i>&nbsp;&nbsp;Delete</button></td>");
+
+            echo ("</tr>");
+        }
+    } else {
+        return (" No record found");
+    }
+}
+
+function DeletedQuotationList()
+{
+    $conn = Connection();
+
+    $view_sql = "SELECT cus_tbl.cus_first_name,
+                        cus_tbl.cus_last_name,
+                        cus_tbl.cus_email,
+                        cus_tbl.cus_code_phoneone,
+                        cus_tbl.cus_phone_one,
+                        cus_tbl.cus_code_phonetwo,
+                        cus_tbl.cus_phone_two,
+                        cus_tbl.cus_houseno,
+                        cus_tbl.cus_street_one,
+                        cus_tbl.cus_street_two,
+                        cus_tbl.cus_city,
+                        cus_tbl.cus_postal_code,
+                        quotation_tbl.qt_id,
+                        quotation_tbl.qt_pdf_path,
+                        quotation_tbl.qt_date,
+                        quotation_tbl.qt_form_status,
+                        quotation_tbl.qt_desc
+                    FROM cus_tbl
+                    INNER JOIN quotation_tbl
+                    ON cus_tbl.cus_id = quotation_tbl.cus_id
+                    WHERE qt_status = 0;";
+
+    $view_result = mysqli_query($conn, $view_sql);
+
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    $nor = mysqli_num_rows($view_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($view_result)) {
+
+            $description = rtrim($rec["qt_desc"], " / ");
+
+            echo ("<td>" . $rec['qt_id'] . "</td>");
+
+            echo ("<td>" . $rec['qt_date'] . "</td>");
+
+            echo ("<td><a href='" . $rec['qt_pdf_path'] . "' target='_blank'><button class='btn btn-primary btn-sm btn-block'><i class='fas fa-file-signature'></i>&nbsp;&nbsp;View</button></a></td>");
+
+            echo ("<td>" . $rec['cus_first_name'] . "&nbsp;" . $rec['cus_last_name'] . "</br>" . $rec['cus_code_phoneone'] . "&nbsp;" . $rec['cus_phone_one'] . "</br>" . $rec['cus_email'] . "</br>" . $rec['cus_houseno'] . ", " . $rec['cus_street_one'] . ", " . $rec['cus_street_two'] . ", " . $rec['cus_city'] . "</td>");
+
+            echo ("<td>" . $description . "</td>");
+
+            echo ("<td style'text-align: center;'><span class='badge badge-pill badge-danger'>Deleted</span></td>");
 
             echo ("</tr>");
         }

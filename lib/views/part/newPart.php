@@ -3,12 +3,13 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 3)) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2 || $_SESSION['user_role'] == 3)) {
 
 ?>
     <style>
+        .cancel {
+            background-color: #FFCE67;
+        }
         #zoom {
             transition: transform .2s;
         }
@@ -59,7 +60,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                                     <select class="custom-select" name="unit">
                                         <option value="mg">mg</option>
                                         <option value="g">g</option>
-                                        <option value="kg">kg</option>
+                                        <option value="kg" selected="">kg</option>
                                     </select>
                                 </div>
                             </div>
@@ -144,29 +145,64 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
         <div class="jumbotron">
             <h1 class="display-5" style="text-align: center;">Part Information&nbsp;&nbsp;<i class="fas fa-cogs fa-1x"></i></h1>
             <hr class="my-4">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#allpartslist">All Parts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#deletedparts">Deleted Parts</a>
+                </li>
+            </ul>
             <br>
-            <table id="allParts" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px; width: 100%;">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th style="min-width:80px;">Code</th>
-                        <th>Image</th>
-                        <th style="min-width:160px;">Name </th>
-                        <th style="min-width:160px;">Product </th>
-                        <th style="min-width:75px;">Weight </th>
-                        <th style="min-width:100px;">Unit Price </th>
-                        <th style="min-width:120px;">Reorder Level </th>
-                        <th style="min-width:60px;">Status </th>
-                        <th style="min-width:40px;">Edit </th>
-                        <th style="min-width:40px;">Delete </th>
-                    </tr>
-                </thead>
-                <tbody id="search_body_result">
-                    <?php
-                    include_once('../../functions/part.php');
-                    ViewPart();
-                    ?>
-                </tbody>
-            </table>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade show active" id="allpartslist">
+                    <table id="allParts" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px; width: 100%;">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th style="min-width:80px;">Code</th>
+                                <th>Image</th>
+                                <th style="min-width:160px;">Name </th>
+                                <th style="min-width:160px;">Product </th>
+                                <th style="min-width:75px;">Weight </th>
+                                <th style="min-width:100px;">Unit Price </th>
+                                <th style="min-width:120px;">Reorder Level </th>
+                                <th style="min-width:60px;">Status </th>
+                                <th style="min-width:40px;">Edit </th>
+                                <th style="min-width:40px;">Delete </th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/part.php');
+                            ViewPart();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="deletedparts">
+                    <table id="deletedPartsList" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px; width: 100%;">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th style="min-width:80px;">Code</th>
+                                <th>Image</th>
+                                <th style="min-width:160px;">Name </th>
+                                <th style="min-width:160px;">Product </th>
+                                <th style="min-width:75px;">Weight </th>
+                                <th style="min-width:100px;">Unit Price </th>
+                                <th style="min-width:120px;">Reorder Level </th>
+                                <th style="min-width:60px;">Status </th>
+                                <th style="min-width:40px;">Delete </th>
+                            </tr>
+                        </thead>
+                        <tbody id="search_body_result">
+                            <?php
+                            include_once('../../functions/part.php');
+                            DeletedParts();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -295,7 +331,46 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
             $("#allParts").DataTable({
                 dom: 'B<"clear">lfrtip',
                 "order": [
-                    [0, "desc"]
+                    [0, "asc"]
+                ],
+                buttons: [{
+                        extend: 'copyHtml5',
+                        text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>&nbsp;Export to Excel',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: PART LIST]"
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fas fa-file-csv"></i>&nbsp;Export to CSV',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: PART LIST]"
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i>&nbsp;Export to PDF',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        },
+                        title: "Udaya Industries [REPORT: PART LIST]"
+                    }
+                ]
+            });
+
+            $("#deletedPartsList").DataTable({
+                dom: 'B<"clear">lfrtip',
+                "order": [
+                    [0, "asc"]
                 ],
                 buttons: [{
                         extend: 'copyHtml5',
@@ -458,16 +533,15 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                             $.get("../../route/part/deletePart.php", {
                                 id: $trID
                             }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
                                 swal({
                                     type: 'success',
                                     title: 'Part deleted!',
                                     text: 'Part details succesfully deleted!',
                                     showConfirmButton: false,
                                     timer: 2000
-                                }).then((result) => {
-                                    if (result.dismiss === Swal.DismissReason.timer) {
-                                        $("#new_reminder").modal("hide");
-                                    }
                                 });
                             });
                         } else {
@@ -477,10 +551,51 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                                 text: 'Part details remain!',
                                 showConfirmButton: false,
                                 timer: 2000
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    $("#new_reminder").modal("hide");
-                                }
+                            });
+                        }
+                    });
+            });
+
+            $('#deletedPartsList tbody').on('click', '.btn-reactivate', function() {
+
+                this.click;
+                $trID = $(this).attr('id');
+
+                swal({
+                        title: "Reactivate Part : " + $trID + "?",
+                        text: "You will restore " + $trID + "'s data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Delete",
+                        confirmButtonColor: "#000000",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.get("../../route/part/reactivate_part.php", {
+                                id: $trID
+                            }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
+                                swal({
+                                    type: 'success',
+                                    title: 'Part Reactivated!',
+                                    text: 'Part details succesfully restored!',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            });
+                        } else {
+                            swal({
+                                type: 'warning',
+                                title: 'Cancelled!',
+                                text: 'Part details remain deleted!',
+                                showConfirmButton: false,
+                                timer: 2000
                             });
                         }
                     });

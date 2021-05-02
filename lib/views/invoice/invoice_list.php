@@ -3,9 +3,7 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2 || $_SESSION['user_role'] == 4)) {
 
 ?>
 
@@ -84,6 +82,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                             <th style='text-align:center;'>Discount</th>
                             <th style='text-align:center;'>Final Price</th>
                             <th style='text-align:center;'>View Summary</th>
+                            <th style='text-align:center;'>Remove</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -583,7 +582,8 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                 });
             });
 
-            $(".btn-delinvoice").click(function() {
+
+            $('#invoice_list tbody').on('click', '.btn-delinvoice', function() {
 
                 var invoiceID = $(this).attr('id');
 
@@ -620,6 +620,50 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
                                 type: 'warning',
                                 title: 'Deletion Cancelled!',
                                 text: 'Invoice details remain!',
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+                        }
+                    });
+            });
+
+            $('#invoice_parts_list tbody').on('click', '.btn-delpartinvoice', function() {
+
+                var invoiceID = $(this).attr('id');
+
+                swal({
+                        title: "Delete Parts Invoice : " + invoiceID + "?",
+                        text: "You will not be able to recover this data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Delete",
+                        confirmButtonColor: "#000000",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.get("../../route/invoice_part/delpartInvoice.php", {
+                                id: invoiceID
+                            }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2550);
+                                swal({
+                                    type: 'success',
+                                    title: 'Parts Invoice deleted!',
+                                    text: 'Parts Invoice Details have been removed!',
+                                    showConfirmButton: false,
+                                    timer: 2500
+                                });
+                            });
+                        } else {
+                            swal({
+                                type: 'warning',
+                                title: 'Deletion Cancelled!',
+                                text: 'Parts Invoice details remain!',
                                 showConfirmButton: false,
                                 timer: 2500
                             });

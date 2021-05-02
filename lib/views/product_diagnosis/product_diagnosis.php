@@ -1,14 +1,17 @@
 <?php
 session_start();
-//import HTML header section
 
 include_once('../../inc/header.php');
 
 if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 3)) {
 
-    include_once('../../inc/sidenav.php');
-
 ?>
+    <style>
+        .cancel {
+            background-color: #FFCE67;
+        }
+    </style>
+
     <br>
 
     <div class="col-md-12">
@@ -261,6 +264,9 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                                     $.when(
                                         window.open("./finalizedDiagnosis_pdf.php?id=" + data + "&diagid=" + prod_diag_id + "&inital_diagnosis_statement=" + inital_diagnosis_statement + "&initial_customer_statement=" + initial_customer_statement + "&warranty_status=" + warranty_status + "&prod_eligibility=" + prod_eligibility + "&repaircost=" + repaircost + "&prod_condition=" + prod_condition + "&final_diagnosis=" + final_diagnosis + "&/", "_blank")
                                     ).then(function() {
+                                        setTimeout(() => {
+                                            window.location.href = './diagnosis_list.php';
+                                        }, 2550);
                                         swal({
                                             type: 'success',
                                             title: 'New Invoice Created!',
@@ -286,6 +292,9 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                                 $.when(
                                     window.open("./finalizedDiagnosis_pdf.php?id=" + data + "&diagid=" + prod_diag_id + "&inital_diagnosis_statement=" + inital_diagnosis_statement + "&initial_customer_statement=" + initial_customer_statement + "&warranty_status=" + warranty_status + "&prod_eligibility=" + prod_eligibility + "&prod_condition=" + prod_condition + "&final_diagnosis=" + final_diagnosis + "&/", "_blank")
                                 ).then(function() {
+                                    setTimeout(() => {
+                                        window.location.href = './diagnosis_list.php';
+                                    }, 2550);
                                     swal({
                                         type: 'success',
                                         title: 'New Invoice Created!',
@@ -301,8 +310,47 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
             });
 
             $(".btn-delete-diag").click(function() {
-                $id = $(this).attr('id');
-                alert($id);
+
+                var diag_id = $(this).attr('id');
+
+                swal({
+                        title: "Delete Product Diagnosis?",
+                        text: "You will not be able to recover this data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Delete",
+                        confirmButtonColor: "#000000",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.get("../../route/productDefectDiagnosis/deleteDiagnosis.php", {
+                                id: diag_id
+                            }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
+                                swal({
+                                    type: 'success',
+                                    title: 'Customer deleted!',
+                                    text: 'Customer details succesfully deleted!',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            });
+                        } else {
+                            swal({
+                                type: 'warning',
+                                title: 'Cancelled!',
+                                text: 'Customer details remain!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }
+                    });
             });
         });
     </script>

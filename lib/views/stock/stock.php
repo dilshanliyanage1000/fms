@@ -3,9 +3,7 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 3)) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2 || $_SESSION['user_role'] == 3 || $_SESSION['user_role'] == 4)) {
 
 ?>
     <br>
@@ -21,90 +19,92 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
     <br>
 
     <div class="col-md-12">
-        <h1 class="display-5" style="text-align: center;"><i class="fas fa-file-medical-alt"></i>&nbsp;&nbsp;Stock Information</h1>
-        <hr class="my-4">
-        <br>
-        <div class="col-md-12">
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#rawmaterialstock">
-                        <h4>Raw Material Stock</h4>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#partstock">
-                        <h4>Parts Stock</h4>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#productstock">
-                        <h4>Products Stock</h4>
-                    </a>
-                </li>
-            </ul>
-            <div id="myTabContent" class="tab-content">
-                <div class="tab-pane fade show active" id="rawmaterialstock">
-                    <br><br>
-                    <table id="rawmatStock" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px; width:100%;">
-                        <thead class="thead-inverse">
-                            <tr>
-                                <th style="min-width: 80px;">Code</th>
-                                <th style="min-width: 250px;">Raw Material Name</th>
-                                <th style="min-width: 480px">Stock Information</th>
-                                <th style="min-width: 45px">Levels</th>
-                                <th style="min-width: 90px;">Availability</th>
-                                <th style="min-width: 90px;">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="search_body_result">
-                            <?php
-                            include_once("../../functions/stock.php");
-                            RMStockList();
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="tab-pane fade" id="partstock">
-                    <br><br>
-                    <table id="partStock" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px; width:100%;">
-                        <thead class="thead-inverse">
-                            <tr>
-                                <th style="min-width: 80px;">Code</th>
-                                <th style="min-width: 300px;">Part Details</th>
-                                <th style="min-width: 430px">Stock Information</th>
-                                <th style="min-width: 45px">Levels</th>
-                                <th style="min-width: 90px;">Availability</th>
-                                <th style="min-width: 90px;">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="search_body_result">
-                            <?php
-                            include_once("../../functions/stock.php");
-                            PartsStockList();
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="tab-pane fade" id="productstock">
-                    <br><br>
-                    <table id="prodStock" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px; width:100%;">
-                        <thead class="thead-inverse">
-                            <tr>
-                                <th style="min-width: 80px;">Code</th>
-                                <th style="min-width: 300px;">Product Details</th>
-                                <th style="min-width: 400px">Stock Information</th>
-                                <th style="min-width: 45px">Levels</th>
-                                <th style="min-width: 90px;">Availability</th>
-                                <th style="min-width: 90px;">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="search_body_result">
-                            <?php
-                            include_once("../../functions/stock.php");
-                            MachineStockList();
-                            ?>
-                        </tbody>
-                    </table>
+        <div class="jumbotron">
+            <h1 class="display-5" style="text-align: center;"><i class="fas fa-file-medical-alt"></i>&nbsp;&nbsp;Stock Information</h1>
+            <hr class="my-4">
+            <br>
+            <div class="col-md-12">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#rawmaterialstock">
+                            <h4>Raw Material Stock</h4>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#partstock">
+                            <h4>Parts Stock</h4>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#productstock">
+                            <h4>Products Stock</h4>
+                        </a>
+                    </li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade show active" id="rawmaterialstock">
+                        <br><br>
+                        <table id="rawmatStock" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px; width:100%;">
+                            <thead class="thead-inverse">
+                                <tr>
+                                    <th style="min-width: 80px;">Code</th>
+                                    <th style="min-width: 200px;">Raw Material Name</th>
+                                    <th style="min-width: 480px">Stock Information</th>
+                                    <th style="min-width: 45px">Levels</th>
+                                    <th style="min-width: 90px;">Availability</th>
+                                    <th style="min-width: 90px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="search_body_result">
+                                <?php
+                                include_once("../../functions/stock.php");
+                                RMStockList();
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="partstock">
+                        <br><br>
+                        <table id="partStock" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px; width:100%;">
+                            <thead class="thead-inverse">
+                                <tr>
+                                    <th style="min-width: 80px;">Code</th>
+                                    <th style="min-width: 300px;">Part Details</th>
+                                    <th style="min-width: 430px">Stock Information</th>
+                                    <th style="min-width: 45px">Levels</th>
+                                    <th style="min-width: 90px;">Availability</th>
+                                    <th style="min-width: 90px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="search_body_result">
+                                <?php
+                                include_once("../../functions/stock.php");
+                                PartsStockList();
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="productstock">
+                        <br><br>
+                        <table id="prodStock" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px; width:100%;">
+                            <thead class="thead-inverse">
+                                <tr>
+                                    <th style="min-width: 80px;">Code</th>
+                                    <th style="min-width: 280px;">Product Details</th>
+                                    <th style="min-width: 400px">Stock Information</th>
+                                    <th style="min-width: 45px">Levels</th>
+                                    <th style="min-width: 90px;">Availability</th>
+                                    <th style="min-width: 90px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="search_body_result">
+                                <?php
+                                include_once("../../functions/stock.php");
+                                MachineStockList();
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

@@ -120,6 +120,16 @@
                             <i class="fas fa-chart-bar"></i><span>Company Sales</span>
                         </a>
                     </li>
+                    <li class="item" id="materials">
+                        <a href="#materials" class="menu-btn" id="textzoom">
+                            <i class="fas fa-hammer"></i><span>Machines & Parts<i class="fas fa-chevron-down drop-down"></i></span>
+                        </a>
+                        <div class="sub-menu">
+                            <a href="../product/newproduct.php"><i class="fas fa-box"></i><span>Machines (Products)</span></a>
+                            <a href="../part/newPart.php"><i class="fas fa-cogs"></i><span>Parts</span></a>
+                            <a href="../rawmaterial/newRawMat.php"><i class="fas fa-truck-loading"></i><span>Raw Materials</span></a>
+                        </div>
+                    </li>
                     <li class="item" id="human_Resource">
                         <a href="#human_Resource" class="menu-btn" id="textzoom">
                             <i class="fa fa-users"></i><span>Human Resource<i class="fas fa-chevron-down drop-down"></i></span>
@@ -183,16 +193,6 @@
                             <a href="../updateproduction/updateproduction.php"><i class="fas fa-people-carry"></i><span>Update Machinery Production</span></a>
                             <a href="../updateproduction/updatepartproduction.php"><i class="fas fa-people-carry"></i><span>Update Part Production</span></a>
                             <a href="../production_history/production_history.php"><i class="fas fa-people-carry"></i><span>View Production History</span></a>
-                        </div>
-                    </li>
-                    <li class="item" id="materials">
-                        <a href="#materials" class="menu-btn" id="textzoom">
-                            <i class="fas fa-hammer"></i><span>Machines & Parts<i class="fas fa-chevron-down drop-down"></i></span>
-                        </a>
-                        <div class="sub-menu">
-                            <a href="../product/newproduct.php"><i class="fas fa-box"></i><span>Machines</span></a>
-                            <a href="../part/newPart.php"><i class="fas fa-cogs"></i><span>Parts</span></a>
-                            <a href="../rawmaterial/newRawMat.php"><i class="fas fa-truck-loading"></i><span>Raw Materials</span></a>
                         </div>
                     </li>
                     <li class="item" id="defectdiag">

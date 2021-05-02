@@ -3,9 +3,7 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 3)) {
-
-    include_once('../../inc/sidenav.php');
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2 || $_SESSION['user_role'] == 3 || $_SESSION['user_role'] == 4)) {
 
 ?>
     <style>
@@ -40,17 +38,17 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
         <div class="jumbotron">
             <h1 class="display-5" style="text-align: center;">Product Diagnosis List&nbsp;&nbsp;<i class="fas fa-laptop-code"></i></h1>
             <hr class="my-4">
-            <table class="table datatable-basic table-bordered table-hover datatable-button-html5-columns" id="diagnosis_list">
+            <table id="diagnosis_list" class="table table-hover table-inverse table-responsive table-bordered" style="margin-top:10px;">
                 <thead>
                     <tr>
                         <th>Ref/No</th>
-                        <th>Uploaded Date</th>
+                        <th>Uploaded</th>
                         <th>Customer Name</th>
                         <th>Defective Product</th>
-                        <th>Image #1</th>
-                        <th>Image #2</th>
-                        <th>Finalized Report</th>
-                        <th>Delete</th>
+                        <th style="width: 100px;">Image #1</th>
+                        <th style="width: 100px;">Image #2</th>
+                        <th style="width: 150px;">Finalized</th>
+                        <th style="width: 100px;">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,15 +103,64 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                 ]
             });
 
-            $("#img_1").click(function(){
+
+
+            $("#img_1").click(function() {
                 $source = $(this).attr('src');
-                window.open($source,'_blank');
+                window.open($source, '_blank');
             });
 
-            $("#img_2").click(function(){
+            $("#img_2").click(function() {
                 $source = $(this).attr('src');
-                window.open($source,'_blank');
+                window.open($source, '_blank');
             });
+
+            $('#diagnosis_list tbody').on('click', '.btn-delete', function() {
+
+                this.click;
+                $trID = $(this).attr('id');
+
+                swal({
+                        title: "Delete Customer : " + $trID + "?",
+                        text: "You will delete all of " + $trID + "'s data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Delete",
+                        confirmButtonColor: "#000000",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.get("../../route/productDefectDiagnosis/deleteDiagnosis.php", {
+                                id: $trID
+                            }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
+                                swal({
+                                    type: 'success',
+                                    title: 'Defect Diagnosis Report Deleted!',
+                                    text: 'All relevant details have been deleted!',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            });
+                        } else {
+                            swal({
+                                type: 'warning',
+                                title: 'Cancelled!',
+                                text: 'Defect Diagnosis details remain!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }
+                    });
+            });
+
+
         });
     </script>
 
