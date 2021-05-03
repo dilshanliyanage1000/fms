@@ -36,7 +36,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
 
                     <!-- Weekly Sales -->
                     <div class="col-xl-3 col-md-6 mb-3" id="zoom">
-                        <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card border-left-primary shadow h-100 py-2" style="background: rgb(225,255,224); background: linear-gradient(0deg, rgba(225,255,224,1) 0%, rgba(255,255,255,1) 100%);">
                             <div class="card-body">
                                 <div style="color: #20c997;">
                                     <h6 style="text-align: center;"><i class="fas fa-dollar-sign"></i>&nbsp;&nbsp;<b>MONTHLY SALES</b></h6>
@@ -56,7 +56,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
 
                     <!-- Annual Earnings -->
                     <div class="col-xl-3 col-md-6 mb-3" id="zoom">
-                        <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card border-left-primary shadow h-100 py-2" style="background: rgb(225,255,224); background: linear-gradient(0deg, rgba(225,255,224,1) 0%, rgba(255,255,255,1) 100%);">
                             <div class="card-body">
                                 <div style="color: #20c997;">
                                     <h6 style="text-align: center;"><i class="fas fa-dollar-sign"></i>&nbsp;&nbsp;<b>ANNUAL EARNINGS (<?php echo date("Y"); ?>)</b></h6>
@@ -76,7 +76,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
 
                     <!-- Pending Orders -->
                     <div class="col-xl-3 col-md-6 mb-3" id="zoom">
-                        <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card border-left-warning shadow h-100 py-2" style="background: rgb(224,247,255); background: linear-gradient(0deg, rgba(224,247,255,1) 0%, rgba(255,255,255,1) 100%);">
                             <div class="card-body">
                                 <div style="color: #6CC3D5;">
                                     <h6 style="text-align: center;"><i class="fas fa-poll"></i>&nbsp;&nbsp;<b>PENDING NOTIFICATIONS</b></h6>
@@ -96,7 +96,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 1) {
 
                     <!-- System Date -->
                     <div class="col-xl-3 col-md-6 mb-3" id="zoom">
-                        <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card border-left-info shadow h-100 py-2" style="background: rgb(255,227,248); background: linear-gradient(0deg, rgba(255,227,248,1) 0%, rgba(255,255,255,1) 100%);">
                             <div class="card-body">
                                 <div style="color: #F3969A;">
                                     <h6 style="text-align: center;"><i class="far fa-clock"></i>&nbsp;&nbsp;<b>SYSTEM DATE</b></h6>

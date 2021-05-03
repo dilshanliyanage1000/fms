@@ -125,3 +125,49 @@ function getPartProductionHistory()
         return (" No record found");
     }
 }
+
+function getrecentProductionUpdates()
+{
+    $conn = Connection();
+
+    $returnTopSellers = '';
+
+    $getHistory = "SELECT prd_production_history_tbl.pph_timestamp, prd_production_history_tbl.user_id, emp_tbl.emp_fname, emp_tbl.emp_lname, product_tbl.prod_code, product_tbl.prod_name, product_tbl.prod_motor_capacity, prd_production_history_tbl.prod_pre_qty, prd_production_history_tbl.prod_qty, prd_production_history_tbl.prod_post_qty
+                    FROM ((prd_production_history_tbl
+                    INNER JOIN emp_tbl
+                    ON prd_production_history_tbl.emp_id = emp_tbl.emp_id)
+                    INNER JOIN product_tbl
+                    ON prd_production_history_tbl.prod_id = product_tbl.prod_id)
+                    ORDER BY prd_production_history_tbl.pph_id DESC
+                    LIMIT 5;";
+
+    $runQuery = mysqli_query($conn, $getHistory);
+
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    $nor = mysqli_num_rows($runQuery);
+
+    if ($nor > 0) {
+
+        $counter = 1;
+
+        while ($rec = mysqli_fetch_assoc($runQuery)) {
+
+            $returnTopSellers .= "<div id='zoom' class='row shadow h-100' style='border: 1px solid #f2f2f2; border-radius: 30px; padding: 10px; background-color: white; margin: 13px;'>
+                                        <div class='col-md-12' style='margin-top: 5px;'>
+                                            <div class='row'>
+                                                <img src='../../../img/list_digits/" . $counter . ".png' style='height: 25px; text-align: left; margin-left: 10px; margin-right: 10px;' alt='Number_One'><h6 style='margin-left: 10px; margin-top: 5px;'>&nbsp;&nbsp;[" . $rec['prod_code'] . "] " . $rec['prod_name'] . " (" . $rec['prod_motor_capacity'] . ") - " . $rec['prod_qty'] . " unit(s)</h6>
+                                            </div>
+                                        </div>
+                                    </div>";
+
+            $counter++;
+        }
+
+        echo ($returnTopSellers);
+    } else {
+        return (" No record found");
+    }
+}

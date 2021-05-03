@@ -90,6 +90,11 @@
             <div class="sidebar">
                 <div class="sidebar-menu" style="margin-left: 5px;">
                     <li class="item">
+                        <a href="#" class="menu-btn" style="text-align: center;">
+                            <h5><span class="badge badge-pill badge-success">Manager Dashboard</span></h5>
+                        </a>
+                    </li>
+                    <li class="item">
                         <a href="../dashboard/manager.php" class="menu-btn" id="textzoom">
                             <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
                         </a>
@@ -143,7 +148,6 @@
                             <i class="fas fa-plus"></i><span>Request Notes<i class="fas fa-chevron-down drop-down"></i></span>
                         </a>
                         <div class="sub-menu">
-                            <a href="../request_notes/rm_request.php"><i class="fas fa-plus"></i><span>Raw Material Request</span></a>
                             <a href="../request_notes/allrequests.php"><i class="far fa-question-circle"></i><span>All Requests</span></a>
                         </div>
                     </li>

@@ -186,14 +186,14 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                     <table class="table table-hover table-inverse table-responsive table-bordered" id="product_list">
                         <thead>
                             <tr>
-                                <th>Code</th>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>P.Capacity</th>
-                                <th>Motor</th>
-                                <th>Current</th>
-                                <th>Price</th>
-                                <th>R/Level</th>
+                                <th style="min-width: 80px;">Code</th>
+                                <th style="min-width: 40px;">Image</th>
+                                <th style="min-width: 205px;">Name</th>
+                                <th style="min-width: 40px;">P.Capacity</th>
+                                <th style="min-width: 40px;">Motor</th>
+                                <th style="min-width: 80px;">Current</th>
+                                <th style="min-width: 100px;">Price</th>
+                                <th style="min-width: 80px;">R/Level</th>
                                 <th style="min-width: 40px;">QR</th>
                                 <th style="min-width: 40px;">Edit</th>
                                 <th style="min-width: 40px;">Delete</th>
@@ -220,7 +220,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                                 <th style="min-width: 100px;">Price</th>
                                 <th style="min-width: 80px;">R/Level</th>
                                 <th style="min-width: 40px;">QR</th>
-                                <th style="min-width: 100px;">Delete</th>
+                                <th style="min-width: 100px;">Reactivate</th>
                             </tr>
                         </thead>
                         <tbody>

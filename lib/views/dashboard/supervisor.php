@@ -36,7 +36,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 3) {
 
                     <!-- Weekly Sales -->
                     <div class="col-xl-3 col-md-6 mb-3" id="zoom">
-                        <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card border-left-primary shadow h-100 py-2" style="background: rgb(225,255,224); background: linear-gradient(0deg, rgba(225,255,224,1) 0%, rgba(255,255,255,1) 100%);">
                             <div class="card-body">
                                 <div style="color: #20c997;">
                                     <h6 style="text-align: center;"><i class="fas fa-dollar-sign"></i>&nbsp;&nbsp;<b>MONTHLY SALES</b></h6>
@@ -56,7 +56,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 3) {
 
                     <!-- Annual Earnings -->
                     <div class="col-xl-3 col-md-6 mb-3" id="zoom">
-                        <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card border-left-primary shadow h-100 py-2" style="background: rgb(225,255,224); background: linear-gradient(0deg, rgba(225,255,224,1) 0%, rgba(255,255,255,1) 100%);">
                             <div class="card-body">
                                 <div style="color: #20c997;">
                                     <h6 style="text-align: center;"><i class="fas fa-dollar-sign"></i>&nbsp;&nbsp;<b>ANNUAL EARNINGS (<?php echo date("Y"); ?>)</b></h6>
@@ -76,7 +76,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 3) {
 
                     <!-- Pending Orders -->
                     <div class="col-xl-3 col-md-6 mb-3" id="zoom">
-                        <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card border-left-warning shadow h-100 py-2" style="background: rgb(224,247,255); background: linear-gradient(0deg, rgba(224,247,255,1) 0%, rgba(255,255,255,1) 100%);">
                             <div class="card-body">
                                 <div style="color: #6CC3D5;">
                                     <h6 style="text-align: center;"><i class="fas fa-poll"></i>&nbsp;&nbsp;<b>PENDING NOTIFICATIONS</b></h6>
@@ -85,8 +85,9 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 3) {
                                 <div>
                                     <h5 style="text-align: center;">
                                         <?php
+                                        $id = $_SESSION['userId'];
                                         include_once('../../functions/notification.php');
-                                        getNotificationCount();
+                                        getNotificationCountbyUser($id)
                                         ?> Requests
                                     </h5>
                                 </div>
@@ -96,7 +97,7 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 3) {
 
                     <!-- System Date -->
                     <div class="col-xl-3 col-md-6 mb-3" id="zoom">
-                        <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card border-left-info shadow h-100 py-2" style="background: rgb(255,227,248); background: linear-gradient(0deg, rgba(255,227,248,1) 0%, rgba(255,255,255,1) 100%);">
                             <div class="card-body">
                                 <div style="color: #F3969A;">
                                     <h6 style="text-align: center;"><i class="far fa-clock"></i>&nbsp;&nbsp;<b>SYSTEM DATE</b></h6>
@@ -112,20 +113,20 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 3) {
                 <br>
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="shadow h-100" style="border-radius: 15px; padding: 25px; background-color: #fff; margin: 5px;">
-                            <h4 style="text-align: center; color: #e3a700;"><i class="fas fa-cogs"></i>&nbsp;&nbsp;TOP SELLING MACHINERIES</h4>
+                        <div class="shadow h-100" style="border-radius: 15px; padding: 25px; margin: 5px;">
+                            <h4 style="text-align: center; color: #a87b00;"><i class="fas fa-people-carry"></i>&nbsp;&nbsp;RECENT PROUCTION UPDATES</h4>
                             <div style="margin-top: 30px;">
                                 <?php
-                                include_once("../../functions/sales.php");
-                                getMostSelling();
+                                include_once("../../functions/production_history.php");
+                                getrecentProductionUpdates();
                                 ?>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="col-md-12" style="width: 100%;">
-                            <div class="shadow h-100" style="border-radius: 15px; padding: 25px; background-color: #fff; margin: 5px;">
-                                <h4 style="text-align: center; color: #e3a700;"><i class="fas fa-truck-loading"></i>&nbsp;&nbsp;LOWERING STOCKS : RAW MATERIALS</h4>
+                            <div class="shadow h-100" style="border-radius: 15px; padding: 25px; margin: 5px;">
+                                <h4 style="text-align: center; color: #a87b00;"><i class="fas fa-truck-loading"></i>&nbsp;&nbsp;LOWERING STOCKS : RAW MATERIALS</h4>
                                 <div style="margin-top: 30px;">
                                     <?php
                                     include_once("../../functions/stock.php");
@@ -136,35 +137,35 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 3) {
                         </div>
                         <br>
                         <div class="col-md-12" style="width: 100%;">
-                            <div class="shadow h-100" style='border: 1px solid #f2f2f2; border-radius: 15px; background-color: white;'>
+                            <div class="shadow h-100"'>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <div class="shadow h-100 option-tile" style="border-radius: 15px;">
-                                                <a href="../quotation/add_quotation.php" style="text-decoration: none;">
+                                            <div class="shadow h-100 option-tile" style="border-radius: 15px; background-color:white;">
+                                                <a href="../production_history/production_history.php" style="text-decoration: none;">
                                                     <div class="card-body" style="margin-bottom: -10px;">
-                                                        <h6 id="txt111" style="text-align: center;"><i class="fas fa-file-import fa-2x"></i></h6>
-                                                        <h6 id="txt112" style="text-align: center; margin-top: 10px;">Create Quotation</h6>
+                                                        <h6 id="txt111" style="text-align: center;"><i class="fas fa-people-carry fa-2x"></i></h6>
+                                                        <h6 id="txt112" style="text-align: center; margin-top: 10px;">Production History</h6>
                                                     </div>
                                                 </a>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <div class="shadow h-100 option-tile" style="border-radius: 15px;">
-                                                <a href="../sys_users/system_users.php" style="text-decoration: none;">
+                                            <div class="shadow h-100 option-tile" style="border-radius: 15px; background-color:white;">
+                                                <a href="../product_diagnosis/product_diagnosis.php" style="text-decoration: none;">
                                                     <div class="card-body" style="margin-bottom: -10px;">
-                                                        <h6 style="text-align: center;"><i class="fas fa-user-plus fa-2x"></i></h6>
-                                                        <h6 style="text-align: center; margin-top: 10px;">Add System User</h6>
+                                                        <h6 style="text-align: center;"><i class="fas fa-laptop-code fa-2x"></i></h6>
+                                                        <h6 style="text-align: center; margin-top: 10px;">Check Diagnostics</h6>
                                                     </div>
                                                 </a>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <div class="shadow h-100 option-tile" style="border-radius: 15px;">
-                                                <a href="../attendance/salary_report.php" style="text-decoration: none;">
+                                            <div class="shadow h-100 option-tile" style="border-radius: 15px; background-color:white;">
+                                                <a href="../quotation/quotation_list.php" style="text-decoration: none;">
                                                     <div class="card-body" style="margin-bottom: -10px;">
-                                                        <h6 style="text-align: center;"><i class="fas fa-file-invoice-dollar fa-2x"></i></h6>
-                                                        <h6 style="text-align: center; margin-top: 10px;">Salary Sheets</h6>
+                                                        <h6 style="text-align: center;"><i class="fas fa-file fa-2x"></i></h6>
+                                                        <h6 style="text-align: center; margin-top: 10px;">View Past Quotations</h6>
                                                     </div>
                                                 </a>
                                             </div>

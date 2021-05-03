@@ -137,7 +137,8 @@ function prodSearchRQ($search)
 
     $searchSql = "SELECT *
                     FROM product_tbl 
-                    WHERE prod_id  LIKE '%$search%' OR
+                    WHERE prod_status = 1 AND 
+                    prod_id  LIKE '%$search%' OR
                     prod_name LIKE '%$search%' OR
                     prod_code LIKE '%$search%' OR
                     prod_description LIKE '%$search%' OR
@@ -201,7 +202,8 @@ function partSearchRQ($search)
                     FROM parts_tbl
                     INNER JOIN product_tbl
                     ON parts_tbl.prod_id = product_tbl.prod_id 
-                    WHERE part_id LIKE '%$search%' OR
+                    WHERE part_status = 1 AND
+                     part_id LIKE '%$search%' OR
                     part_code LIKE '%$search%' OR
                     part_name LIKE '%$search%' OR
                     prod_name LIKE '%$search%' OR
@@ -754,7 +756,7 @@ function updateProductionbyRQST($requestID, $date, $loggedUser)
                 while ($record = mysqli_fetch_assoc($runListQuery)) {
 
                     $prodID = $record['prod_id'];
-                    
+
                     $prodQty = $record['rqpr_qty'];
 
                     $getprestockQty = "SELECT prod_qty FROM stock_prod_tbl WHERE prod_id = '$prodID';";
@@ -1187,3 +1189,4 @@ function getRQSTdetailsbyID($value)
         }
     }
 }
+?>

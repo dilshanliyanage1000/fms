@@ -77,8 +77,9 @@
                         Welcome,&nbsp;<?php echo ($_SESSION['userFirstName'] . '&nbsp;' . $_SESSION['userLastName']); ?>!
                     </div>
                     <ul>
-                        <li><a href="#" class="notification" id="notification_popup" data-toggle='modal' data-target='#notificationModal'><span><i class="fas fa-bell"></i></span><span class="badge"><?php include_once('../../functions/notification.php');
-                                                                                                                                                                                                        getNotificationCount(); ?></span></a></li>
+                        <li><a href="#" class="notification" id="notification_popup" data-toggle='modal' data-target='#notificationModal'><span><i class="fas fa-bell"></i></span><span class="badge"><?php $id = $_SESSION['userId'];
+                                                                                                                                                                                                        include_once('../../functions/notification.php');
+                                                                                                                                                                                                        getNotificationCountbyUser($id) ?></span></a></li>
                         <li><a href="../../views/myprofile/myprofile.php"><i class="fas fa-user"></i></a></li>
                         <li><a href="../../functions/logout_class.php"><i class="fas fa-sign-out-alt"> </i></a></li>
                     </ul>
@@ -89,6 +90,11 @@
             <!--sidebar start-->
             <div class="sidebar">
                 <div class="sidebar-menu" style="margin-left: 5px;">
+                    <li class="item">
+                        <a href="#" class="menu-btn" style="text-align: center;">
+                            <h5><span class="badge badge-pill badge-secondary">Supervisor Dashboard</span></h5>
+                        </a>
+                    </li>
                     <li class="item">
                         <a href="../dashboard/supervisor.php" class="menu-btn" id="textzoom">
                             <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
@@ -111,6 +117,16 @@
                         <div class="sub-menu">
                             <a href="../quotation/add_quotation.php"><i class="far fa-clipboard"></i><span>Create Quotation</span></a>
                             <a href="../quotation/quotation_list.php"><i class="far fa-clipboard"></i><span>Past Quotations</span></a>
+                        </div>
+                    </li>
+                    <li class="item" id="reqNotes">
+                        <a href="#reqNotes" class="menu-btn" id="textzoom">
+                            <i class="fas fa-plus"></i><span>Request Notes<i class="fas fa-chevron-down drop-down"></i></span>
+                        </a>
+                        <div class="sub-menu">
+                            <a href="../request_notes/rm_request.php"><i class="fas fa-plus"></i><span>Raw Material Request</span></a>
+                            <a href="../request_notes/part_production_request.php"><i class="fas fa-plus"></i><span>Part Production Request</span></a>
+                            <a href="../request_notes/production_req_form.php"><i class="fas fa-plus"></i><span>Production Request</span></a>
                         </div>
                     </li>
                     <li class="item" id="order_management">
@@ -165,8 +181,9 @@
                                 <h5 class="modal-title">Your Notifications</h5>&nbsp;|&nbsp;&nbsp;
                                 <h5 class="modal-title" id="nf_count">
                                     <?php
+                                    $id = $_SESSION['userId'];
                                     include_once('../../functions/notification.php');
-                                    getNotificationCount();
+                                    getNotificationCountbyUser($id)
                                     ?>
                                 </h5>
                                 <h5 class="modal-title">&nbsp;Unread</h5>
@@ -176,8 +193,9 @@
                             </div>
                             <div class="modal-body" style="background-color: #eee;">
                                 <?php
+                                $id = $_SESSION['userId'];
                                 include_once('../../functions/notification.php');
-                                GetNotifications();
+                                GetConfirmedNotificationsbyUser($id)
                                 ?>
                                 <?php
                                 include_once('../../functions/notification.php');
@@ -191,204 +209,34 @@
                 <script>
                     $(document).ready(function() {
 
-                        $(".btn-rm-req-accept").click(function() {
-
-                            $id = $(this).attr('id');
-
-                            $("#card_" + $id).fadeIn(2700, function() {
-                                $(this).css("display", "none");
-                            });
-
-                            $ct = $("#nf_count").html();
-
-                            $ctn = parseFloat($ct);
-
-                            $nct = parseFloat($ctn) - 1;
-
-                            $("#nf_count").html($nct);
-
-                            $badgeval = $(".badge").html();
-
-                            $newbadgeval = parseFloat($badgeval);
-
-                            $badgevalnew = parseFloat($newbadgeval) - 1;
-
-                            $(".badge").html($badgevalnew);
-
-                            $.post("../../route/notification/confirm_rm_req.php", {
-                                id: $id
-                            }, function(data) {
-                                if (data == "success") {
-                                    $.when(
-                                        window.open("../../views/purchase_order/purchase_order.php?rqstID=" + $id + "&/", "_blank")
-                                    ).then(function() {
-                                        setTimeout(() => {
-                                            window.location.href = '../../purchase_order/po_list.php';
-                                            location.reload();
-                                        }, 2100);
-                                        swal({
-                                            type: 'success',
-                                            title: 'Request Confirmed!',
-                                            text: 'A mail will be sent to their relative suppliers',
-                                            showConfirmButton: false,
-                                            timer: 2000
-                                        });
-                                    });
-                                } else {
-                                    $error_msg = "Kindly check whether all the mandatory fields have been filled out";
-                                    swal("Check your inputs!", $error_msg, "warning");
-                                }
-                            });
+                        $(".btn-view-notice").click(function() {
+                            $path = $(this).attr('id');
+                            window.open($path, "_blank");
                         });
 
-                        $(".btn-rm-req-reject").click(function() {
-
+                        $(".btn-dismiss-notif").click(function() {
                             $id = $(this).attr('id');
 
-                            $("#card_" + $id).fadeIn(2700, function() {
-                                $(this).css("display", "none");
-                            });
-
-                            $ct = $("#nf_count").html();
-
-                            $ctn = parseFloat($ct);
-
-                            $nct = parseFloat($ctn) - 1;
-
-                            $("#nf_count").html($nct);
-
-                            $badgeval = $(".badge").html();
-
-                            $newbadgeval = parseFloat($badgeval);
-
-                            $badgevalnew = parseFloat($newbadgeval) - 1;
-
-                            $(".badge").html($badgevalnew);
-
-                            $.post("../../route/notification/reject_rm_req.php", {
+                            $.post("../../route/notification/dismissnotification.php", {
                                 id: $id
                             }, function(data) {
                                 if (data == "success") {
                                     setTimeout(() => {
-                                        window.location.href = '../request_notes/allrequests.php';
-                                    }, 2600);
+                                        location.reload();
+                                    }, 2100);
                                     swal({
-                                        type: 'error',
-                                        title: 'Request Declined!',
-                                        text: 'The Supervisor will be notified of this action',
+                                        type: 'success',
+                                        title: 'Request Dismissed!',
                                         showConfirmButton: false,
-                                        timer: 2500
+                                        timer: 2000
                                     });
                                 } else {
                                     $error_msg = "Kindly check whether all the mandatory fields have been filled out";
                                     swal("Check your inputs!", $error_msg, "warning");
                                 }
                             });
+
                         });
 
-                        //Production request options----------------------------------------------------------------------------
-
-                        $(".btn-prod-req-accept").click(function() {
-                            $requestID = $(this).attr('id');
-                            window.open('../notification/prod_production_confirm_page.php?requestID=' + $requestID + '&/', '_parent');
-                        });
-
-                        $(".btn-prod-req-reject").click(function() {
-
-                            $id = $(this).attr('id');
-
-                            $("#card_" + $id).fadeIn(2700, function() {
-                                $(this).css("display", "none");
-                            });
-
-                            $ct = $("#nf_count").html();
-
-                            $ctn = parseFloat($ct);
-
-                            $nct = parseFloat($ctn) - 1;
-
-                            $("#nf_count").html($nct);
-
-                            $badgeval = $(".badge").html();
-
-                            $newbadgeval = parseFloat($badgeval);
-
-                            $badgevalnew = parseFloat($newbadgeval) - 1;
-
-                            $(".badge").html($badgevalnew);
-
-                            $.post("../../route/notification/reject_production_req.php", {
-                                id: $id
-                            }, function(data) {
-                                if (data == "success") {
-                                    setTimeout(() => {
-                                        window.location.href = '../request_notes/allrequests.php';
-                                    }, 2600);
-                                    swal({
-                                        type: 'error',
-                                        title: 'Request Declined!',
-                                        text: 'The Supervisor will be notified of this action',
-                                        showConfirmButton: false,
-                                        timer: 2500
-                                    });
-                                } else {
-                                    $error_msg = "Kindly check whether all the mandatory fields have been filled out";
-                                    swal("Check your inputs!", $error_msg, "warning");
-                                }
-                            });
-                        });
-
-                        //Part Production request options----------------------------------------------------------------------------
-
-                        $(".btn-part-prod-req-accept").click(function() {
-
-                            $requestID = $(this).attr('id');
-                            window.open('../notification/part_production_confirm_page.php?requestID=' + $requestID + '&/', '_parent');
-                        });
-
-                        $(".btn-part-prod-req-reject").click(function() {
-
-                            $id = $(this).attr('id');
-
-                            $("#card_" + $id).fadeIn(2700, function() {
-                                $(this).css("display", "none");
-                            });
-
-                            $ct = $("#nf_count").html();
-
-                            $ctn = parseFloat($ct);
-
-                            $nct = parseFloat($ctn) - 1;
-
-                            $("#nf_count").html($nct);
-
-                            $badgeval = $(".badge").html();
-
-                            $newbadgeval = parseFloat($badgeval);
-
-                            $badgevalnew = parseFloat($newbadgeval) - 1;
-
-                            $(".badge").html($badgevalnew);
-
-                            $.post("../../route/notification/reject_production_req.php", {
-                                id: $id
-                            }, function(data) {
-                                if (data == "success") {
-                                    setTimeout(() => {
-                                        window.location.href = '../request_notes/allrequests.php';
-                                    }, 2600);
-                                    swal({
-                                        type: 'error',
-                                        title: 'Request Declined!',
-                                        text: 'The Supervisor will be notified of this action',
-                                        showConfirmButton: false,
-                                        timer: 2500
-                                    });
-                                } else {
-                                    $error_msg = "Kindly check whether all the mandatory fields have been filled out";
-                                    swal("Check your inputs!", $error_msg, "warning");
-                                }
-                            });
-                        });
                     });
                 </script>

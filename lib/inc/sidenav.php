@@ -90,6 +90,11 @@
             <div class="sidebar">
                 <div class="sidebar-menu" style="margin-left: 5px;">
                     <li class="item">
+                        <a href="#" class="menu-btn" style="text-align: center;">
+                            <h5><span class="badge badge-pill badge-dark">Administrator Dashboard</span></h5>
+                        </a>
+                    </li>
+                    <li class="item">
                         <a href="../dashboard/admin.php" class="menu-btn" id="textzoom">
                             <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
                         </a>

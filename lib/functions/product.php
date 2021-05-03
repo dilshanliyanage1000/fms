@@ -97,7 +97,7 @@ function ViewProduct()
             echo ("<td style='text-align: right;'>Rs. " . number_format($rec['prod_unit_price']) . ".00</td>");
             echo ("<td style='text-align: center;'>" . $rec['prod_reorder_level'] . " unit(s)</td>");
             echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-info btn-sm btn-block'><i class='fas fa-qrcode'></i>&nbsp;QR</button></td>");
-            echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-primary btn-sm btn-block' data-toggle='modal' data-target='#editModal'>Edit</button></td>");
+            echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-primary btn-sm btn-block' data-toggle='modal' data-target='#editModal'><i class='fas fa-edit'></i>&nbsp;Edit</button></td>");
             echo ("<td style='text-align: center;'><button id=" . $rec['prod_id'] . " class='btn btn-danger btn-sm btn-block'><i class='fas fa-trash'></i>&nbsp;&nbsp;Delete</button></td>");
 
             echo ("</tr>");

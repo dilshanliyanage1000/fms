@@ -199,6 +199,35 @@ function getNotificationCount()
     }
 };
 
+function getNotificationCountbyUser($id)
+{
+    $conn = Connection();
+
+    $getNotifCount = "SELECT COUNT(*) AS total
+                        FROM request_tbl
+                        INNER JOIN notification_tbl
+                        ON request_tbl.rqst_id = notification_tbl.rqst_id
+                        WHERE notification_tbl.notif_rqst_stt = 'Confirmed' AND notification_tbl.user_id = '$id' AND notification_tbl.notif_show_status = 'show'
+                        ORDER BY notification_tbl.notif_id DESC";
+
+    $countnotif = mysqli_query($conn, $getNotifCount);
+
+    if (mysqli_errno($conn)) {
+        echo (mysqli_error($conn));
+    }
+
+    if (mysqli_num_rows($countnotif) > 0) {
+
+        $rec = mysqli_fetch_assoc($countnotif);
+
+        $tot = $rec["total"];
+
+        echo ($tot);
+    } else {
+        return false;
+    }
+};
+
 function lowStockProdError()
 {
     $conn = Connection();
@@ -231,6 +260,124 @@ function lowStockProdError()
         }
     } else {
 
+        return false;
+    }
+}
+
+
+function GetConfirmedNotificationsbyUser($id)
+{
+    $conn = Connection();
+
+    $getNotification = "SELECT *
+                        FROM request_tbl
+                        INNER JOIN notification_tbl
+                        ON request_tbl.rqst_id = notification_tbl.rqst_id
+                        WHERE notification_tbl.notif_rqst_stt = 'Confirmed' AND notification_tbl.user_id = '$id' AND notif_show_status = 'show'
+                        ORDER BY notification_tbl.notif_id DESC;";
+
+    $search_result = mysqli_query($conn, $getNotification);
+
+    $nor = mysqli_num_rows($search_result);
+
+    if ($nor > 0) {
+
+        while ($rec = mysqli_fetch_assoc($search_result)) {
+
+            $checkType = $rec['rqst_type'];
+
+            if ($checkType == 'RM-REQUEST') {
+
+                $getID = $rec['user_id'];
+
+                $loggedUser =  getUserNamebyID($getID);
+
+                $getPDFpath = $rec['rqst_pdf'];
+
+                echo ('<div class="card" id="card_' . $rec['rqst_id'] . '">
+                            <div class="card-body">
+                                <h5 class="card-subtitle mb-2" style="color: #4881db;">Your Raw Material Request Has Been Confirmed</h5>
+                                <p class="card-text">Created Date : ' . $rec['notif_date'] . ' | Accepted Date : ' . $rec['notif_accepted_date'] . '</p>
+                                <p class="card-text">Created By : ' . $loggedUser . '</p>
+                                <hr>
+                                <div align="center">
+                                    <a href="#" class="card-link">
+                                        <button type="button" id="' . $rec['rqst_id'] . '" class="btn btn-success btn-dismiss-notif btn-sm btn-block"><i class="fas fa-check"></i>&nbsp;&nbsp;Please visit the manager or administrators/button>
+                                    </a>
+                                </div>                            
+                            </div>
+                        </div>');
+            } else if ($checkType == 'PRODUCTION-REQUEST') {
+
+                $getID = $rec['user_id'];
+
+                $loggedUser =  getUserNamebyID($getID);
+
+                $getPDFpath = $rec['rqst_pdf'];
+
+                echo ('<div class="card" id="card_' . $rec['rqst_id'] . '">
+                            <div class="card-body">
+                                <h5 class="card-subtitle mb-2" style="color: #4881db;">Your Machinery Production Request Has Been Confirmed</h5>
+                                <p class="card-text">Created Date : ' . $rec['notif_date'] . ' | Accepted Date : ' . $rec['notif_accepted_date'] . '</p>
+                                <p class="card-text">Created By : ' . $loggedUser . '</p>
+                                <hr>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <button type="button" id="' . $getPDFpath . '" class="btn btn-success btn-view-notice btn-sm btn-block"><i class="far fa-eye"></i>&nbsp;&nbsp;View Notice</button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="button" id="' . $rec['rqst_id'] . '" class="btn btn-danger btn-dismiss-notif btn-sm btn-block"><i class="far fa-times-circle"></i>&nbsp;&nbsp;Dismiss</button>
+                                        </div>
+                                    </div>
+                                </div>                            
+                            </div>
+                        </div>');
+            } else if ($checkType == 'PART-PRODUCTION-REQUEST') {
+
+                $getID = $rec['user_id'];
+
+                $loggedUser =  getUserNamebyID($getID);
+
+                $getPDFpath = $rec['rqst_pdf'];
+
+                echo ('<div class="card" id="card_' . $rec['rqst_id'] . '">
+                            <div class="card-body">
+                                <h5 class="card-subtitle mb-2" style="color: #4881db;">Your Part Production Request Has Been Confirmed</h5>
+                                <p class="card-text">Created Date : ' . $rec['notif_date'] . ' <br> Accepted Date : ' . $rec['notif_accepted_date'] . '</p>
+                                <hr>
+                                <div class="col-md-12">
+                                   <div class="row">
+                                        <div class="col-md-6">
+                                            <button type="button" id="' . $getPDFpath . '" class="btn btn-success btn-view-notice btn-sm btn-block"><i class="far fa-eye"></i>&nbsp;&nbsp;View Notice</button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="button" id="' . $rec['rqst_id'] . '" class="btn btn-danger btn-dismiss-notif btn-sm btn-block"><i class="far fa-times-circle"></i>&nbsp;&nbsp;Dismiss</button>
+                                        </div>
+                                    </div>
+                                </div>                            
+                            </div>
+                        </div>');
+            }
+
+            echo ('<hr class="my-4">');
+        }
+    } else {
+        return false;
+    }
+}
+
+function DismissNotification($id)
+{
+    $conn = Connection();
+
+    $confirmSQL = "UPDATE notification_tbl SET notif_show_status = 'hide' WHERE rqst_id = '$id';";
+
+    $search_result = mysqli_query($conn, $confirmSQL);
+
+    if ($search_result > 0) {
+        echo ("success");
+    } else {
         return false;
     }
 }

@@ -295,7 +295,7 @@ function getMostSelling()
                                         </div>
                                     </div>";
 
-            
+
                 $counter++;
             }
         }
@@ -306,4 +306,5 @@ function getMostSelling()
         echo ($returnTopSellers);
     }
 }
+
 ?>

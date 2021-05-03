@@ -306,7 +306,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
 
                         if (data == "success") {
                             setTimeout(() => {
-                                windows.location.href = "../production_history/production_history.php";
+                                window.location.href = "../production_history/production_history.php";
                             }, 2050);
                             swal({
                                 type: 'success',

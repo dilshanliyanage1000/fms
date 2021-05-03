@@ -437,14 +437,13 @@ function RMLoweringStocks()
                                         </div>
                                     </div>
                                     <div class='col-md-3' style='text-align:left;'>
-                                        <h6 style='margin-top: 4px;'>~" . $stockpercentage . "% left</h6>
+                                        <h6 style='margin-top: 4px;'>~" . round($stockpercentage, 2) . "% left</h6>
                                     </div>
                                 </div>
                             </div>
                         </div>");
 
                 $c++;
-
             } else if ($rec["rm_qty"] < $warnlevel && $rec["rm_qty"] > $rec["rm_reorder_level"]) {
 
                 echo ("<div id='zoom' class='row shadow h-100' style='border: 1px solid #f2f2f2; border-radius: 30px; padding: 10px; background-color: white; margin: 10px;'>
@@ -459,14 +458,13 @@ function RMLoweringStocks()
                                         </div>
                                     </div>
                                     <div class='col-md-3' style='text-align:left;'>
-                                        <h6 style='margin-top: 4px;'>~" . $stockpercentage . "% left</h6>
+                                        <h6 style='margin-top: 4px;'>~" . round($stockpercentage, 2) . "% left</h6>
                                     </div>
                                 </div>
                             </div>
                         </div>");
 
                 $c++;
-
             } else if ($rec["rm_qty"] < $rec["rm_reorder_level"]) {
 
                 echo ("<div id='zoom' class='row shadow h-100' style='border: 1px solid #f2f2f2; border-radius: 30px; padding: 10px; background-color: white; margin: 10px;'>
@@ -481,7 +479,7 @@ function RMLoweringStocks()
                                         </div>
                                     </div>
                                     <div class='col-md-3' style='text-align:left;'>
-                                        <h6 style='margin-top: 4px;'>~" . $stockpercentage . "% left</h6>
+                                        <h6 style='margin-top: 4px;'>~" . round($stockpercentage, 2) . "% left</h6>
                                     </div>
                                 </div>
                             </div>
@@ -494,3 +492,10 @@ function RMLoweringStocks()
         return (" No record found");
     }
 }
+
+
+function getTopCustomer()
+{
+
+}
+?>
