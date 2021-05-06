@@ -110,6 +110,18 @@
                             <a href="../invoice_part/invoice_part.php"><i class="fas fa-file-invoice"></i><span>For Parts</span></a>
                         </div>
                     </li>
+                    <li class="item" id="order_management">
+                        <a href="#order_management" class="menu-btn" id="textzoom">
+                            <i class="fas fa-cash-register"></i><span>Order Management<i class="fas fa-chevron-down drop-down"></i></span>
+                        </a>
+                        <div class="sub-menu">
+                            <a href="../grn/grn.php"><i class="fas fa-file-alt"></i><span>Create G.R. Note</span></a>
+                            <a href="../grn/grn_list.php"><i class="fas fa-file-alt"></i><span>G.R. Notes List</span></a>
+                            <a href="../purchase_order/po_list.php"><i class="fas fa-file-powerpoint"></i><span>Purchase Orders</span></a>
+                            <a href="../invoice/invoice_list.php"><i class="fas fa-file-invoice"></i><span>Invoice Management</span></a>
+                            <a href="../stock/stock.php"><i class="fas fa-chart-bar"></i><span>Stock Management</span></a>
+                        </div>
+                    </li>
                     <li class="item" id="human_Resource">
                         <a href="#human_Resource" class="menu-btn" id="textzoom">
                             <i class="fa fa-users"></i><span>Human Resource<i class="fas fa-chevron-down drop-down"></i></span>
@@ -150,18 +162,6 @@
                             <a href="../request_notes/part_production_request.php"><i class="fas fa-plus"></i><span>Part Production Request</span></a>
                             <a href="../request_notes/production_req_form.php"><i class="fas fa-plus"></i><span>Production Request</span></a>
                             <a href="../request_notes/allrequests.php"><i class="far fa-question-circle"></i><span>All Requests</span></a>
-                        </div>
-                    </li>
-                    <li class="item" id="order_management">
-                        <a href="#order_management" class="menu-btn" id="textzoom">
-                            <i class="fas fa-cash-register"></i><span>Order Management<i class="fas fa-chevron-down drop-down"></i></span>
-                        </a>
-                        <div class="sub-menu">
-                            <a href="../grn/grn.php"><i class="fas fa-file-alt"></i><span>Create G.R. Note</span></a>
-                            <a href="../grn/grn_list.php"><i class="fas fa-file-alt"></i><span>G.R. Notes List</span></a>
-                            <a href="../purchase_order/po_list.php"><i class="fas fa-file-powerpoint"></i><span>Purchase Orders</span></a>
-                            <a href="../invoice/invoice_list.php"><i class="fas fa-file-invoice"></i><span>Invoice Management</span></a>
-                            <a href="../stock/stock.php"><i class="fas fa-chart-bar"></i><span>Stock Management</span></a>
                         </div>
                     </li>
                     <li class="item" id="update_production">

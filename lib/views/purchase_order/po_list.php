@@ -103,6 +103,9 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
         $(document).ready(function() {
             $("#purchaseordersList").DataTable({
                 dom: 'B<"clear">lfrtip',
+                "order": [
+                    [0, "desc"]
+                ],
                 buttons: [{
                         extend: 'copyHtml5',
                         text: '<i class="fas fa-copy"></i>&nbsp;Copy to Clipboard',

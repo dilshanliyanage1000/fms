@@ -7,6 +7,12 @@ include_once('../../inc/header.php');
 if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 2)) {
 
 ?>
+    <style>
+        .cancel {
+            background-color: #FFCE67;
+        }
+    </style>
+
     <br>
 
     <div class="col-md-12">
@@ -38,10 +44,10 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         <hr class="my-4">
                         <p class="lead">Employee Selection</p>
                         <div class="row form-group">
-                            <div class="col-md-10">
+                            <div class="col-md-12">
                                 <br />
                                 <div class="row">
-                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                    <div class="col-sm-7 col-md-7 col-lg-7">
                                         <div class="input-group">
                                             <input type="search" name="emp_search" id="emp_search" class="form-control" placeholder="Enter any employee detail...">
                                             <div class="input-group-append">
@@ -49,13 +55,13 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4 col-md-4 col-lg-4">
-                                        <button id="newEmp" class="btn btn-info" onclick="return false"><i class="fas fa-plus"></i>&nbsp;Employee</button>
+                                    <div class="col-sm-5 col-md-5 col-lg-5">
+                                        <button id="newEmp" class="btn btn-info btn-block" onclick="return false"><i class="fas fa-user-plus"></i>&nbsp;&nbsp;Employee</button>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="row" id="e_sel_section" style="margin-top:5px; display:none;">
-                                        <p class="form-text text-muted"><i class="fas fa-exclamation-circle" style="margin-left:15px;">&nbsp;</i>Selected Employee :&nbsp;</p>
+                                        <p class="form-text text-muted"><i class="fas fa-exclamation-circle" style="margin-left:15px;"></i>&nbsp;Selected Employee :&nbsp;</p>
                                         <p class="form-text text-muted">[</p>
                                         <p class="form-text text-muted" id="sel_emp_id"></p>
                                         <p class="form-text text-muted">]</p>&nbsp;
@@ -65,9 +71,11 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                                     <p style="color: red; display: none;" id="error_mail" class="form-text"><i class="far fa-times-circle"></i>&nbsp;This user already has a login to the system!</p>
                                     <p style="color: #39d453; display: none;" id="valid_mail" class="form-text"><i class="far fa-check-circle"></i>&nbsp;Valid User! Proceed to fill in login credentials!</p>
                                 </div>
-                                <br />
-                                <div id="empInfo"></div>
                             </div>
+                        </div>
+                        <br>
+                        <div class="row form-group">
+                            <div id="empInfo"></div>
                         </div>
                     </form>
                 </div>
@@ -134,19 +142,18 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
 
     <div class="col-md-12">
         <div class="jumbotron">
-            <h1 class="display-5" align="center">New User Login&nbsp;&nbsp;<i class="fas fa-users fa-1x"></i></h1>
+            <h1 class="display-5" align="center">User Login List&nbsp;&nbsp;<i class="fas fa-users fa-1x"></i></h1>
             <br>
             <hr class="my-4">
             <table id="allUsers" class="table table-hover table-inverse table-responsive table-bordered">
                 <thead class="thead-inverse">
                     <tr>
-                        <th style="min-width: 80px;">User ID</th>
+                        <th style="min-width: 100px;">User ID</th>
                         <th style="min-width: 100px;">Employee ID</th>
                         <th style="min-width: 100px;">First Name </th>
                         <th style="min-width: 100px;">Last Name </th>
-                        <th>Email </th>
-                        <th>Password [MD5] </th>
-                        <th>User Role </th>
+                        <th style="min-width: 300px;">Email </th>
+                        <th style="min-width: 140px;">User Role </th>
                         <th style="width: 40px;">Status </th>
                         <th style="width: 40px;">Edit </th>
                         <th style="width: 40px;">Delete </th>
@@ -258,6 +265,10 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
 
     <script>
         $(document).ready(function() {
+
+            $("#newEmp").click(function() {
+                window.location.href = "../employee/employee.php";
+            });
 
             document.getElementById('password_one').disabled = true;
             document.getElementById("TwoPassword").disabled = true;
@@ -490,6 +501,49 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                 });
             });
 
+            $('#allUsers tbody').on('click', '.btn-deluser', function() {
+
+                $id = $(this).attr('id');
+
+                swal({
+                        title: "Are you sure?",
+                        text: "You will still be able to recover this data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Delete",
+                        confirmButtonColor: "#000000",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.post("../../route/sys_users/deleteUser.php", {
+                                id: $id
+                            }, function(data) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2050);
+                                swal({
+                                    type: 'success',
+                                    title: 'User Deactivated!',
+                                    text: 'User Access has been removeds!',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            });
+                        } else {
+                            swal({
+                                type: 'warning',
+                                title: 'Cancelled!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }
+                    });
+            });
+
             $("#btn_edit").click(function() {
 
                 $userID = $("#userID").val();
@@ -527,7 +581,6 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                     }
                 })
             });
-
         });
     </script>
 

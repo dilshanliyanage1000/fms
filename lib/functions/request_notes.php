@@ -256,6 +256,8 @@ function partSearchRQ($search)
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+//save the request depeding on the type of the request
+
 function saveRequest($type, $requester, $date, $user, $usersname, $tabledata)
 {
     if (empty($requester)) {
@@ -274,6 +276,8 @@ function saveRequest($type, $requester, $date, $user, $usersname, $tabledata)
             $conn = Connection();
 
             $req_id = Auto_id("rqst_id", "request_tbl", "RQS");
+
+            //add the request note to the table
 
             $placeRQST = "INSERT INTO request_tbl (rqst_id, rqst_type, emp_id, user_id, rqst_date, rqst_status)
                         VALUES ('$req_id','$type','$requester','$user','$thisdate','Pending');";
@@ -308,6 +312,8 @@ function saveRequest($type, $requester, $date, $user, $usersname, $tabledata)
 
                     $reqitems_id = Auto_id("rqit_id", "rqst_items_tbl", "RQI");
 
+                    //add items included in the request into the request items table with the request item as reference
+
                     $rqstitms = "INSERT INTO rqst_items_tbl (rqit_id,rqst_id,sup_id,rm_id,rm_qty,rm_urgency,rm_notes,rqit_status)
                                         VALUES ('$reqitems_id','$req_id','$supID','$rmId','$rmQty','$rmUrgency','$rmNotes',1);";
 
@@ -321,6 +327,8 @@ function saveRequest($type, $requester, $date, $user, $usersname, $tabledata)
                 $notifID = Auto_id("notif_id", "notification_tbl", "NTF");
 
                 $supervisor = getEmpNamebyID($requester);
+
+                // add a notification to display to the manager and administrator
 
                 $insert_notification = "INSERT INTO notification_tbl (notif_id,rqst_id,user_id,rqst_type,notif_title,notif_body,notif_date,set_date,notif_status)
                                         VALUES ('$notifID','$req_id','$user','$type','New Raw Material Request From $supervisor','$description','$accDate','$thisdate',1);";
@@ -705,9 +713,13 @@ function updateProductionbyRQST($requestID, $date, $loggedUser)
 
             if ($nofrows > 0) {
 
+                $runfinalQuery = '';
+                $runstockQuery = '';
+
                 while ($record = mysqli_fetch_assoc($runListQuery)) {
 
                     $partID = $record['part_id'];
+
                     $partQty = $record['rqpt_qty'];
 
                     $getprestockQty = "SELECT part_qty FROM stock_part_tbl WHERE part_id = '$partID';";
@@ -732,13 +744,14 @@ function updateProductionbyRQST($requestID, $date, $loggedUser)
                     $updateStock = "UPDATE stock_part_tbl SET part_qty = part_qty + $partQty WHERE part_id = '$partID';";
 
                     $runstockQuery = mysqli_query($conn, $updateStock);
-
-                    if ($runfinalQuery > 0 && $runstockQuery > 0) {
-                        echo ("success");
-                    } else {
-                        return ("error");
-                    }
                 }
+
+                if ($runfinalQuery > 0 && $runstockQuery > 0) {
+                    echo ("success");
+                } else {
+                    return ("error");
+                }
+
             }
         } else if ($rec['rqst_type'] == 'PRODUCTION-REQUEST') {
 

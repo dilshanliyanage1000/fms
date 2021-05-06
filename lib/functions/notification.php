@@ -302,7 +302,7 @@ function GetConfirmedNotificationsbyUser($id)
                                 <hr>
                                 <div align="center">
                                     <a href="#" class="card-link">
-                                        <button type="button" id="' . $rec['rqst_id'] . '" class="btn btn-success btn-dismiss-notif btn-sm btn-block"><i class="fas fa-check"></i>&nbsp;&nbsp;Please visit the manager or administrators/button>
+                                        <button type="button" id="' . $rec['rqst_id'] . '" class="btn btn-success btn-dismiss-notif btn-sm btn-block"><i class="fas fa-check"></i>&nbsp;&nbsp;Please visit the manager or administrators</button>
                                     </a>
                                 </div>                            
                             </div>

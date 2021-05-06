@@ -4,6 +4,7 @@
 
 function Connection(){
     
+    //database connection and details
     $server = "127.0.0.1";
     $user = "root";
     $pwd = "";
@@ -13,7 +14,6 @@ function Connection(){
     $conn = mysqli_connect($server,$user,$pwd,$database);
 
     //validating the  database connection
-
     if(mysqli_connect_errno($conn)){
         return("Connection Error");
     }

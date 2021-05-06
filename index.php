@@ -86,29 +86,4 @@ if (isset($_POST['userEmail'])) {
     <h4 style="color: white;">- Developed by Dilshan Liyanage [1708937] -</h4>
 </div>
 
-<script>
-    $(document).ready(function() {
-
-        $("#userEmail").keyup(function() {
-
-            var searchVal = $(this).val();
-
-            if (searchVal.length < 8) {
-                $("#verified_mail").hide();
-            } else {
-                $.get("lib/route/login/searchUser.php", {
-                    data: searchVal
-                }, function(data) {
-                    if (data == "success") {
-                        $("#verified_mail").show();
-                    } else {
-                        $("#verified_mail").hide();
-
-                    }
-                });
-            }
-        });
-    });
-</script>
-
 </html>

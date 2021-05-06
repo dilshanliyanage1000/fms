@@ -3,6 +3,8 @@ include_once('db_conn.php');
 
 include_once('id_maker.php');
 
+
+//create an invoice record
 function createInvoice($cusID, $empID, $invoiceTotal, $discount, $finalprice, $paymentID, $date, $pdfpath)
 {
     $conn = Connection();
@@ -25,6 +27,7 @@ function createInvoice($cusID, $empID, $invoiceTotal, $discount, $finalprice, $p
     }
 }
 
+//create a part invoice record
 function createPartInvoice($cusID, $empID, $invoiceTotal, $discount, $finalprice, $paymentID, $date, $pdfpath)
 {
     $conn = Connection();
@@ -47,6 +50,7 @@ function createPartInvoice($cusID, $empID, $invoiceTotal, $discount, $finalprice
     }
 }
 
+// add items included in the invoice along with the invoice ID as reference
 function invoiceItems($invoiceID, $prodID, $unitprice, $qty, $totalprice)
 {
     $conn = Connection();
@@ -77,6 +81,7 @@ function invoiceItems($invoiceID, $prodID, $unitprice, $qty, $totalprice)
     }
 }
 
+// add items included in the part invoice along with the invoice ID as reference
 function invoicePartItems($invoiceID, $partID, $unitprice, $qty, $totalprice)
 {
     $conn = Connection();
@@ -107,6 +112,7 @@ function invoicePartItems($invoiceID, $partID, $unitprice, $qty, $totalprice)
     }
 }
 
+//add payment mentioned in the invoice
 function addPayment($type, $amount, $cardreceipt, $checkqueno, $chequeDate)
 {
     $conn = Connection();
@@ -129,6 +135,7 @@ function addPayment($type, $amount, $cardreceipt, $checkqueno, $chequeDate)
     }
 }
 
+// add the path of the created invoice report to the table
 function updateInvoicePDF($id, $path)
 {
 
@@ -149,6 +156,7 @@ function updateInvoicePDF($id, $path)
     }
 }
 
+// add the path of the created invoice report to the table
 function updatePartInvoicePDF($id, $path)
 {
 
@@ -169,6 +177,7 @@ function updatePartInvoicePDF($id, $path)
     }
 }
 
+// custom card like product search for the invoice 
 function prodSearchInvoice($search)
 {
     $conn = Connection();
@@ -200,6 +209,8 @@ function prodSearchInvoice($search)
     if ($nor > 0) {
 
         while ($rec = mysqli_fetch_assoc($searchQuery)) {
+
+            //bootstrap card made for the product invoice
 
             echo ("<div style='display: inline-block; margin-top:5px; margin-left:10px; margin-bottom: 5px; width: 270px; text-align:center;'>
                         <div class='card' style='width:260px; min-height: 400px;'>
@@ -250,6 +261,7 @@ function prodSearchInvoice($search)
     }
 };
 
+// custom card like part search for the invoice
 function partSearchInvoice($search)
 {
     $conn = Connection();
@@ -281,6 +293,8 @@ function partSearchInvoice($search)
     if ($nor > 0) {
 
         while ($rec = mysqli_fetch_assoc($searchQuery)) {
+
+            //bootstrap card made for the part invoice
 
             echo ("<div style='display: inline-block; margin-top:5px; margin-left:10px; margin-bottom: 5px; width: 270px; text-align:center;'>
                         <div class='card' style='width:260px; min-height: 400px;'>
@@ -330,6 +344,9 @@ function partSearchInvoice($search)
         echo ("No record found!");
     }
 };
+
+
+//list of the parts invoices
 
 function PartsInvoiceList()
 {
@@ -440,6 +457,8 @@ function PartsInvoiceList()
     }
 }
 
+//list of the invoices
+
 function InvoiceList()
 {
     $conn = Connection();
@@ -541,10 +560,13 @@ function InvoiceList()
     }
 }
 
+// get invoice details by ID
 
 function getinvoicebyID($id)
 {
     $conn = Connection();
+
+    //4 table joins with to get every details related to an invoice
 
     $getinvoice = "SELECT invoice_tbl.inv_id, invoice_tbl.inv_date, invoice_tbl.user_id, cus_tbl.cus_id, cus_tbl.cus_first_name, cus_tbl.cus_last_name, cus_tbl.cus_email, cus_tbl.cus_code_phoneone, cus_tbl.cus_phone_one, cus_tbl.cus_code_phonetwo, cus_tbl.cus_phone_two, cus_tbl.cus_houseno, cus_tbl.cus_street_one, cus_tbl.cus_street_two, cus_tbl.cus_city, cus_tbl.cus_postal_code, emp_tbl.emp_fname, emp_tbl.emp_lname, invoice_tbl.inv_total_price, invoice_tbl.inv_discount, invoice_tbl.inv_final_price, payment_tbl.payment_type, payment_tbl.payment_cardreceipt, payment_tbl.payment_chequeNo, payment_tbl.payment_chequeDate, payment_tbl.payment_time, invoice_tbl.inv_pdf_path, invoice_tbl.aod_pdf_path, invoice_tbl.gio_pdf_path
                     FROM ((((invoice_tbl
@@ -575,9 +597,13 @@ function getinvoicebyID($id)
     }
 }
 
+// get parts invoice details by ID
+
 function getpartsinvoicebyID($id)
 {
     $conn = Connection();
+
+    //4 table joins with to get every details related to a part invoice
 
     $getinvoice = "SELECT invoice_parts_tbl.p_inv_id, invoice_parts_tbl.p_inv_date, invoice_parts_tbl.user_id, cus_tbl.cus_id, cus_tbl.cus_first_name, cus_tbl.cus_last_name, cus_tbl.cus_email, cus_tbl.cus_code_phoneone, cus_tbl.cus_phone_one, cus_tbl.cus_code_phonetwo, cus_tbl.cus_phone_two, cus_tbl.cus_houseno, cus_tbl.cus_street_one, cus_tbl.cus_street_two, cus_tbl.cus_city, cus_tbl.cus_postal_code, emp_tbl.emp_fname, emp_tbl.emp_lname, invoice_parts_tbl.p_inv_total_price, invoice_parts_tbl.p_inv_discount, invoice_parts_tbl.p_inv_final_price, payment_tbl.payment_type, payment_tbl.payment_cardreceipt, payment_tbl.payment_chequeNo, payment_tbl.payment_chequeDate, payment_tbl.payment_time, invoice_parts_tbl.p_inv_pdf_path, invoice_parts_tbl.p_aod_pdf_path, invoice_parts_tbl.p_gio_pdf_path
                     FROM ((((invoice_parts_tbl
@@ -607,6 +633,8 @@ function getpartsinvoicebyID($id)
         return false;
     }
 }
+
+// get parts invoice items by ID
 
 function getinvoiceItemsbyID($id)
 {
@@ -845,13 +873,125 @@ function deletePartsInvoice($id)
         $runDel = mysqli_query($conn, $delSQL);
 
         if ($runDel > 0 && $runItemDel > 0) {
-            
+
             echo ("success");
         } else {
             echo ("error");
         }
     } else {
         echo ("No records found!!!");
+    }
+}
+
+// pdf paths for invoice of machineries
+
+function getInvoicePath($id)
+{
+    $conn = Connection();
+
+    $getpath = "SELECT inv_pdf_path FROM invoice_tbl WHERE inv_id = '$id';";
+
+    $runGet = mysqli_query($conn, $getpath);
+
+    if (($nor = mysqli_num_rows($runGet)) > 0) {
+
+        $rec = mysqli_fetch_assoc($runGet);
+
+        return ($rec['inv_pdf_path']);
+    } else {
+        return false;
+    }
+}
+
+function getAODPath($id)
+{
+    $conn = Connection();
+
+    $getpath = "SELECT aod_pdf_path FROM invoice_tbl WHERE inv_id = '$id';";
+
+    $runGet = mysqli_query($conn, $getpath);
+
+    if (($nor = mysqli_num_rows($runGet)) > 0) {
+
+        $rec = mysqli_fetch_assoc($runGet);
+
+        return ($rec['aod_pdf_path']);
+    } else {
+        return false;
+    }
+}
+
+function getGIOPath($id)
+{
+    $conn = Connection();
+
+    $getpath = "SELECT gio_pdf_path FROM invoice_tbl WHERE inv_id = '$id';";
+
+    $runGet = mysqli_query($conn, $getpath);
+
+    if (($nor = mysqli_num_rows($runGet)) > 0) {
+
+        $rec = mysqli_fetch_assoc($runGet);
+
+        return ($rec['gio_pdf_path']);
+    } else {
+        return false;
+    }
+}
+
+//pdf paths for parts invoices
+
+function getPartInvoicePath($id)
+{
+    $conn = Connection();
+
+    $getpath = "SELECT p_inv_pdf_path FROM invoice_parts_tbl WHERE p_inv_id = '$id';";
+
+    $runGet = mysqli_query($conn, $getpath);
+
+    if (($nor = mysqli_num_rows($runGet)) > 0) {
+
+        $rec = mysqli_fetch_assoc($runGet);
+
+        return ($rec['p_inv_pdf_path']);
+    } else {
+        return false;
+    }
+}
+
+function getPartAODPath($id)
+{
+    $conn = Connection();
+
+    $getpath = "SELECT p_aod_pdf_path FROM invoice_parts_tbl WHERE p_inv_id = '$id';";
+
+    $runGet = mysqli_query($conn, $getpath);
+
+    if (($nor = mysqli_num_rows($runGet)) > 0) {
+
+        $rec = mysqli_fetch_assoc($runGet);
+
+        return ($rec['p_aod_pdf_path']);
+    } else {
+        return false;
+    }
+}
+
+function getPartGIOPath($id)
+{
+    $conn = Connection();
+
+    $getpath = "SELECT p_gio_pdf_path FROM invoice_parts_tbl WHERE p_inv_id = '$id';";
+
+    $runGet = mysqli_query($conn, $getpath);
+
+    if (($nor = mysqli_num_rows($runGet)) > 0) {
+
+        $rec = mysqli_fetch_assoc($runGet);
+
+        return ($rec['p_gio_pdf_path']);
+    } else {
+        return false;
     }
 }
 

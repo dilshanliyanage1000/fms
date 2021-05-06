@@ -85,10 +85,18 @@ function purchaseOrderList()
     }
 }
 
+//get the list of purchases
+
 function getallPO($id)
 {
 
     $conn = Connection();
+
+    // a huge database query :
+    // the first query will get all the requests joined with the notification table and the employee table filtered with the given ID
+    // then another query will run over to get the name and details of the creator of the request
+    // the query is then filtered and tallied with the purchase order table to get the purchase orders of the provided ID
+    // also get the query to get the suppliers list
 
     $requestlist = "SELECT q2.po_id, q2.sup_id, q2.sup_company_name, q2.po_pdf_path, q1.rqst_id, q1.rqst_type, q1.requester, q1.rqst_status, q1.notif_body, q1.notif_date, q1.notif_accepted_date, q1.creator
                     FROM (
@@ -136,6 +144,8 @@ function getallPO($id)
 
         $pdf_paths = '';
         $c = 1;
+
+        //sorted with the given ID the output will customized to the supplier with their relevant purchase order
 
         $pdf_paths .= "<div class='col-md-12'>
                         <div class='row'>";

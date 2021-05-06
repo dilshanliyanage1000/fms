@@ -747,6 +747,10 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
 
                 if ($phonenolength.length > 9) {
                     $("#error_tel_one").show();
+                    $("#telone").val('');
+                } else if ($phonenolength < 0) {
+                    swal("Phone number cannot be negative", "Please enter a valid number", "warning");
+                    $("#telone").val('');
                 } else {
                     $("#error_tel_one").hide();
                 }
@@ -757,6 +761,9 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
 
                 if ($phonenolength.length > 9) {
                     $("#error_tel_two").show();
+                } else if ($phonenolength < 0) {
+                    swal("Phone number cannot be negative", "Please enter a valid number", "warning");
+                    $("#teltwo").val('');
                 } else {
                     $("#error_tel_two").hide();
                 }

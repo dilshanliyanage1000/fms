@@ -7,6 +7,8 @@ include_once('id_maker.php');
 
 //--------------------------------------------------------------------------------------------------------------
 
+
+//getting a list of active suppliers for the goods recieved note form
 function getSupplierforSelect()
 {
     //connection
@@ -37,6 +39,7 @@ function getSupplierforSelect()
 
 //------------------------------------------------------------------------------------------------------------------
 
+//getting a list of warehouses for the goods received note form
 function getWarehouseforSelect()
 {
     //connection
@@ -66,10 +69,12 @@ function getWarehouseforSelect()
 }
 
 
+//getting raw materials depended on the selected supplier in the form
 function rmSearchonSupplier($search, $supplier)
 {
     $conn = Connection();
 
+    //two SQL table join to receive the raw materials of the selected supplier
     $searchSql = "SELECT supplier_rm_tbl.rm_sup_id, supplier_rm_tbl.sup_id, supplier_tbl.sup_company_name, supplier_rm_tbl.rm_id, rawmaterial_tbl.rm_name, rawmaterial_tbl.rm_description
                     FROM ((supplier_rm_tbl
                     INNER JOIN supplier_tbl ON supplier_rm_tbl.sup_id = supplier_tbl.sup_id)
@@ -88,6 +93,8 @@ function rmSearchonSupplier($search, $supplier)
     $nor = mysqli_num_rows($searchQuery);
 
     if ($nor > 0) {
+
+        //out put data is appended to a custom bootstrap card to display in a card-format view
 
         $output = '
             <div class="wrapper" id="wrapper">
@@ -118,6 +125,7 @@ function rmSearchonSupplier($search, $supplier)
 
         $output .= '</div></div>';
 
+        //output each data
         echo ($output);
     } else {
         echo ("No record found!");
@@ -126,6 +134,7 @@ function rmSearchonSupplier($search, $supplier)
 
 // ------------------------------Customer get details section------------------------------------
 
+// get rawmtaerial details by given ID
 function getRMforGRN($rmId)
 {
     $conn = Connection();
@@ -146,6 +155,7 @@ function getRMforGRN($rmId)
 
 //-----------------------------------------------------------------------------------------------------
 
+//save the grn form along with the provided supplier invoice
 
 function saveGRN($supplier, $userid, $grnrefno, $paymentstt, $duedate, $whid, $filename, $filepath, $additionalnotes, $totalprice)
 {
@@ -185,7 +195,6 @@ function saveGRN($supplier, $userid, $grnrefno, $paymentstt, $duedate, $whid, $f
 
 function getRecentlyAddedGRN()
 {
-
     $conn = Connection();
 
     $prev_id = "SELECT * FROM goodsrecievednote_tbl WHERE grn_status = 1 ORDER BY grn_id DESC limit 1;";
@@ -211,6 +220,7 @@ function getRecentlyAddedGRN()
 
 //--------------------------------------------------------------------------------------------------------------------
 
+//add items included in the grn to the grn items table along with the GRN id as a foreign key
 function addGRNItems($grnid, $rmid, $rmname, $unitprice, $qty, $totprice)
 {
 
@@ -241,9 +251,9 @@ function addGRNItems($grnid, $rmid, $rmname, $unitprice, $qty, $totprice)
 
 //------------------------------------------------------------------------------------------------------------------------
 
+//get warehouse by ID
 function getWarehouseName($id)
 {
-
     $conn = Connection();
 
     $sql_select = "SELECT wh_address FROM warehouse_tbl WHERE wh_id ='$id' AND wh_status = 1;";
@@ -269,9 +279,9 @@ function getWarehouseName($id)
 
 //----------------------------------------------------------------------------------------------------------------------------
 
+//get supplier by ID
 function getSupplierName($id)
 {
-
     $conn = Connection();
 
     $sql_select = "SELECT sup_company_name FROM supplier_tbl WHERE sup_id ='$id' AND sup_status = '1';";
@@ -297,6 +307,7 @@ function getSupplierName($id)
 
 //----------------------------------------------------------------------------------------------------------------------------
 
+//add created GRN report to the GRN table
 function addPathtoGRN($id, $path)
 {
     $conn = Connection();
@@ -320,7 +331,6 @@ function addPathtoGRN($id, $path)
 
 function GRNlist()
 {
-
     $conn = Connection();
 
     $view_sql = "SELECT goodsrecievednote_tbl.grn_id, goodsrecievednote_tbl.create_date, supplier_tbl.sup_company_name, goodsrecievednote_tbl.grn_scan_path, goodsrecievednote_tbl.grn_ref_code, goodsrecievednote_tbl.payment_status, goodsrecievednote_tbl.grn_due_date, goodsrecievednote_tbl.grn_paid_date, goodsrecievednote_tbl.grn_total_amt, goodsrecievednote_tbl.grn_path, goodsrecievednote_tbl.grn_status

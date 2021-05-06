@@ -116,7 +116,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6]
                         },
-                        title: "Udaya Industries [REPORT: PRODUCTION HISTORY]"
+                        title: "Udaya Industries [REPORT: DEFECT DIAGNOSIS HISTORY]"
                     },
                     {
                         extend: 'csvHtml5',
@@ -124,7 +124,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6]
                         },
-                        title: "Udaya Industries [REPORT: PRODUCTION HISTORY]"
+                        title: "Udaya Industries [REPORT: DEFECT DIAGNOSIS HISTORY]"
                     },
                     {
                         extend: 'pdfHtml5',
@@ -132,7 +132,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6]
                         },
-                        title: "Udaya Industries [REPORT: PRODUCTION HISTORY]"
+                        title: "Udaya Industries [REPORT: DEFECT DIAGNOSIS HISTORY]"
                     }
                 ]
             });
@@ -155,7 +155,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6]
                         },
-                        title: "Udaya Industries [REPORT: PART PRODUCTION HISTORY]"
+                        title: "Udaya Industries [REPORT: DEFECT DIAGNOSIS HISTORY]"
                     },
                     {
                         extend: 'csvHtml5',
@@ -163,7 +163,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6]
                         },
-                        title: "Udaya Industries [REPORT: PART PRODUCTION HISTORY]"
+                        title: "Udaya Industries [REPORT: DEFECT DIAGNOSIS HISTORY]"
                     },
                     {
                         extend: 'pdfHtml5',
@@ -171,7 +171,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6]
                         },
-                        title: "Udaya Industries [REPORT: PART PRODUCTION HISTORY]"
+                        title: "Udaya Industries [REPORT: DEFECT DIAGNOSIS HISTORY]"
                     }
                 ]
             });

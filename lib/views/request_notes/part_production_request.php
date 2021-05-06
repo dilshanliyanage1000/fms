@@ -3,7 +3,7 @@ session_start();
 
 include_once('../../inc/header.php');
 
-if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 3 || $_SESSION['user_role'] == 4)) {
+if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['user_role'] == 4)) {
 
 ?>
     <br>
@@ -341,6 +341,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
     </body>
 
     </html>
+
 
 <?php
 
@@ -684,7 +685,10 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
 
     </html>
 
-<?php } else {
+<?php
+
+} else {
+
 ?>
 
     <body id="login_body" style="background-image: url('../../../img/login.jpg'); background-size: cover; background-repeat: 'no-repeat'; background-attachment: 'fixed'; background-position: 'center';">

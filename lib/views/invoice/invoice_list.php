@@ -146,17 +146,17 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         <div class="col-md-12">
                             <div class="row">
                                 <div class="col-md-12" id="view_invoice" style="margin-top: 5px;">
-                                    <button type="button" id="inv_btn" class="btn btn-light btn-block">
+                                    <button type="button" id="inv_btn" class="btn btn-light btn-block btn-invoice">
                                         <i class="fas fa-download"></i>&nbsp;&nbsp;Download Invoice
                                     </button>
                                 </div>
                                 <div class="col-md-12" id="view_aod" style="margin-top: 5px;">
-                                    <button type="button" id="aod_btn" class="btn btn-light btn-block">
+                                    <button type="button" id="aod_btn" class="btn btn-light btn-block btn-aod">
                                         <i class="fas fa-download"></i>&nbsp;&nbsp;Advice of Dispatch
                                     </button>
                                 </div>
                                 <div class="col-md-12" id="view_gio" style="margin-top: 5px;">
-                                    <button type="button" id="gio_btn" class="btn btn-light btn-block">
+                                    <button type="button" id="gio_btn" class="btn btn-light btn-block btn-gio">
                                         <i class="fas fa-download"></i>&nbsp;&nbsp;Goods Issue Note
                                     </button>
                                 </div>
@@ -218,17 +218,17 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         <div class="col-md-12">
                             <div class="row">
                                 <div class="col-md-12" id="p_view_invoice" style="margin-top: 5px;">
-                                    <button type="button" id="p_inv_btn" class="btn btn-light btn-block">
+                                    <button type="button" id="p_inv_btn" class="btn btn-light btn-block btn-parts-invoice">
                                         <i class="fas fa-download"></i>&nbsp;&nbsp;Download Invoice
                                     </button>
                                 </div>
                                 <div class="col-md-12" id="p_view_aod" style="margin-top: 5px;">
-                                    <button type="button" id="p_aod_btn" class="btn btn-light btn-block">
+                                    <button type="button" id="p_aod_btn" class="btn btn-light btn-block btn-parts-aod">
                                         <i class="fas fa-download"></i>&nbsp;&nbsp;Advice of Dispatch
                                     </button>
                                 </div>
                                 <div class="col-md-12" id="p_view_gio" style="margin-top: 5px;">
-                                    <button type="button" id="p_gio_btn" class="btn btn-light btn-block">
+                                    <button type="button" id="p_gio_btn" class="btn btn-light btn-block btn-parts-gio">
                                         <i class="fas fa-download"></i>&nbsp;&nbsp;Goods Issue Note
                                     </button>
                                 </div>
@@ -333,6 +333,73 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                     var jdata = jQuery.parseJSON(data);
 
                     var invoiceID = jdata.inv_id;
+
+                    if (jdata.inv_pdf_path == '') {
+                        $("#view_invoice").hide();
+                    } else {
+                        $("#view_invoice").show();
+                        $(".btn-invoice").attr("id", jdata.inv_id);
+                    }
+
+                    $(".btn-invoice").click(function() {
+
+                        $id = $(this).attr('id');
+
+                        $.get("../../route/invoice/getInvoicePath.php", {
+                            id: $id
+                        }, function(data) {
+                            if (data !== '') {
+                                window.open(data, "_blank");
+                            } else {
+                                swal("No PDF found", "Please contant an administrator", "warning");
+                            }
+                        });
+                    });
+
+                    if (jdata.aod_pdf_path == '') {
+                        $("#view_aod").hide();
+                    } else {
+                        $("#view_aod").show();
+                        $(".btn-aod").attr("id", jdata.inv_id);
+                    }
+
+                    $(".btn-aod").click(function() {
+
+                        $id = $(this).attr('id');
+
+                        $.get("../../route/invoice/getAodPath.php", {
+                            id: $id
+                        }, function(data) {
+                            if (data !== '') {
+                                window.open(data, "_blank");
+                            } else {
+                                swal("No PDF found", "Please contant an administrator", "warning");
+                            }
+                        });
+                    });
+
+                    if (jdata.gio_pdf_path == '') {
+                        $("#view_gio").hide();
+                    } else {
+                        $("#view_gio").show();
+                        $(".btn-gio").attr("id", jdata.inv_id);
+                    }
+
+                    $(".btn-gio").click(function() {
+
+                        $id = $(this).attr('id');
+
+                        $.get("../../route/invoice/getGioPath.php", {
+                            id: $id
+                        }, function(data) {
+                            if (data !== '') {
+                                window.open(data, "_blank");
+                            } else {
+                                swal("No PDF found", "Please contant an administrator", "warning");
+                            }
+                        });
+                    });
+
                     var invoiceDate = jdata.inv_date;
                     var invoiceTotalPrice = jdata.inv_total_price;
                     var invoiceDiscount = jdata.inv_discount;
@@ -368,50 +435,6 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                     var time = paymentTime.split(" ")[1];
 
                     var paymentTime = date + "&nbsp;@&nbsp;" + time;
-
-                    //----------------------------------------------------
-
-                    var invPDF = jdata.inv_pdf_path;
-
-                    if (invPDF == '') {
-                        $("#view_invoice").hide();
-                    } else {
-                        $("#view_invoice").show();
-                    }
-
-                    $("#inv_btn").click(function() {
-                        window.open(invPDF, '_blank');
-                    });
-
-                    //----------------------------------------------------
-
-                    var aodPDF = jdata.aod_pdf_path;
-
-                    if (aodPDF == '') {
-                        $("#view_aod").hide();
-                    } else {
-                        $("#view_aod").show();
-                    }
-
-                    $("#aod_btn").click(function() {
-                        window.open(aodPDF, '_blank');
-                    });
-
-                    //----------------------------------------------------
-
-                    var gioPDF = jdata.gio_pdf_path;
-
-                    if (gioPDF == '') {
-                        $("#view_gio").hide();
-                    } else {
-                        $("#view_gio").show();
-                    }
-
-                    $("#gio_btn").click(function() {
-                        window.open(gioPDF, '_blank');
-                    });
-
-                    //----------------------------------------------------
 
                     $("#invID").html(invoiceID);
 
@@ -499,46 +522,72 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
 
                     var paymentTime = date + "&nbsp;@&nbsp;" + time;
 
-                    //----------------------------------------------------
+                    //--------------------------------------------------------
 
-                    var invPDF = jdata.p_inv_pdf_path;
-
-                    if (invPDF == '') {
+                    if (jdata.p_inv_pdf_path == '') {
                         $("#p_view_invoice").hide();
                     } else {
                         $("#p_view_invoice").show();
+                        $(".btn-parts-invoice").attr("id", jdata.p_inv_id);
                     }
 
-                    $("#p_inv_btn").click(function() {
-                        window.open(invPDF, '_blank');
+                    $(".btn-parts-invoice").click(function() {
+
+                        $id = $(this).attr('id');
+
+                        $.get("../../route/invoice_part/getPartsInvoicePath.php", {
+                            id: $id
+                        }, function(data) {
+                            if (data !== '') {
+                                window.open(data, "_blank");
+                            } else {
+                                swal("No PDF found", "Please contant an administrator", "warning");
+                            }
+                        });
                     });
 
-                    //----------------------------------------------------
-
-                    var aodPDF = jdata.p_aod_pdf_path;
-
-                    if (aodPDF == '') {
+                    if (jdata.p_aod_pdf_path == '') {
                         $("#p_view_aod").hide();
                     } else {
                         $("#p_view_aod").show();
+                        $(".btn-parts-aod").attr("id", jdata.p_inv_id);
                     }
 
-                    $("#p_aod_btn").click(function() {
-                        window.open(aodPDF, '_blank');
+                    $(".btn-parts-aod").click(function() {
+
+                        $id = $(this).attr('id');
+
+                        $.get("../../route/invoice_part/getPartsAodPath.php", {
+                            id: $id
+                        }, function(data) {
+                            if (data !== '') {
+                                window.open(data, "_blank");
+                            } else {
+                                swal("No PDF found", "Please contant an administrator", "warning");
+                            }
+                        });
                     });
 
-                    //----------------------------------------------------
-
-                    var gioPDF = jdata.p_gio_pdf_path;
-
-                    if (gioPDF == '') {
+                    if (jdata.p_gio_pdf_path == '') {
                         $("#p_view_gio").hide();
                     } else {
                         $("#p_view_gio").show();
+                        $(".btn-parts-gio").attr("id", jdata.p_inv_id);
                     }
 
-                    $("#p_gio_btn").click(function() {
-                        window.open(gioPDF, '_blank');
+                    $(".btn-parts-gio").click(function() {
+
+                        $id = $(this).attr('id');
+
+                        $.get("../../route/invoice_part/getPartsGioPath.php", {
+                            id: $id
+                        }, function(data) {
+                            if (data !== '') {
+                                window.open(data, "_blank");
+                            } else {
+                                swal("No PDF found", "Please contant an administrator", "warning");
+                            }
+                        });
                     });
 
                     //----------------------------------------------------

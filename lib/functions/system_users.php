@@ -100,32 +100,35 @@ function getUsers()
 
         while ($rec = mysqli_fetch_assoc($view_result)) {
 
-            echo ("<td>" . $rec['user_id'] . "</td>");
-            echo ("<td>" . $rec['emp_id'] . "</td>");
-            echo ("<td>" . $rec['emp_fname'] . "</td>");
-            echo ("<td>" . $rec['emp_lname'] . "</td>");
-            echo ("<td>" . $rec['emp_email'] . "</td>");
-            echo ("<td>" . $rec['user_pwd'] . "</td>");
-
-            if ($rec['user_role'] == "1") {
-                echo ("<td style='text-align:center';><span class='badge badge-pill badge-dark'>Administrator</span></td>");
-            } else if ($rec['user_role'] == "2") {
-                echo ("<td style='text-align:center';><span class='badge badge-pill badge-primary'>Manager</span></td>");
-            } else if ($rec['user_role'] == "3") {
-                echo ("<td style='text-align:center';><span class='badge badge-pill badge-secondary'>Supervisor</span></td>");
+            if ($rec['user_id'] == 'USR0000001') {
             } else {
-                echo ("<td style='text-align:center';><span class='badge badge-pill badge-info'>In-office Employee</span></td>");
-            }
 
-            if ($rec['user_status'] == 1) {
-                echo ("<td style='text-align:center';><span class='badge badge-pill badge-primary'>Active</span></td>");
-            } else {
-                echo ("<td style='text-align:center';><span class='badge badge-pill badge-danger'>Deactived</span></td>");
-            }
-            echo ("<td><button id=" . $rec['user_id'] . " class='btn btn-success btn-sm' data-toggle='modal' data-target='#editModal'>Edit</button></td>");
-            echo ("<td><button id=" . $rec['user_id'] . " class='btn btn-danger btn-sm'>Delete</button></td>");
+                echo ("<td>" . $rec['user_id'] . "</td>");
+                echo ("<td>" . $rec['emp_id'] . "</td>");
+                echo ("<td>" . $rec['emp_fname'] . "</td>");
+                echo ("<td>" . $rec['emp_lname'] . "</td>");
+                echo ("<td>" . $rec['emp_email'] . "</td>");
 
-            echo ("</tr>");
+                if ($rec['user_role'] == "1") {
+                    echo ("<td style='text-align:center';><span class='badge badge-pill badge-dark'>Administrator</span></td>");
+                } else if ($rec['user_role'] == "2") {
+                    echo ("<td style='text-align:center';><span class='badge badge-pill badge-primary'>Manager</span></td>");
+                } else if ($rec['user_role'] == "3") {
+                    echo ("<td style='text-align:center';><span class='badge badge-pill badge-secondary'>Supervisor</span></td>");
+                } else {
+                    echo ("<td style='text-align:center';><span class='badge badge-pill badge-info'>In-office Employee</span></td>");
+                }
+
+                if ($rec['user_status'] == 1) {
+                    echo ("<td style='text-align:center';><span class='badge badge-pill badge-primary'>Active</span></td>");
+                } else {
+                    echo ("<td style='text-align:center';><span class='badge badge-pill badge-danger'>Deactived</span></td>");
+                }
+                echo ("<td><button id=" . $rec['user_id'] . " class='btn btn-success btn-sm' data-toggle='modal' data-target='#editModal'>Edit</button></td>");
+                echo ("<td><button id=" . $rec['user_id'] . " class='btn btn-danger btn-deluser btn-sm'>Delete</button></td>");
+
+                echo ("</tr>");
+            }
         }
     } else {
         return (" No record found");
@@ -209,3 +212,35 @@ function editPassword($userID, $empID, $passwordone, $passwordtwo)
         return false;
     }
 }
+
+function deleteUser($id)
+{
+    $conn = Connection();
+
+    $deleteSQL = "UPDATE user_tbl SET user_status = 0 WHERE user_id = '$id';";
+
+    $runSQL = mysqli_query($conn, $deleteSQL);
+
+    if ($runSQL > 0) {
+        echo ("success");
+    } else {
+        return false;
+    }
+}
+
+function reactivateUser($id)
+{
+    $conn = Connection();
+
+    $deleteSQL = "UPDATE user_tbl SET user_status = 1 WHERE user_id = '$id';";
+
+    $runSQL = mysqli_query($conn, $deleteSQL);
+
+    if ($runSQL > 0) {
+        echo ("success");
+    } else {
+        return false;
+    }
+}
+
+?>

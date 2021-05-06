@@ -122,7 +122,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         </label>
                         <div class="form-group">
                             <select class="custom-select" name="prod_eligibility" id="prod_eligibility">
-                                <option selected="">-- Select Eligibility --</option>
+                                <option value="" selected="">-- Select Eligibility --</option>
                                 <option value="repair">Repairs**</option>
                                 <option value="onetonereplacement">One-to-one replacement</option>
                             </select>
@@ -147,7 +147,7 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                         </label>
                         <div class="form-group">
                             <select class="custom-select" name="prod_condition" id="prod_condition">
-                                <option selected="">-- Select Product Condition --</option>
+                                <option value="" selected="">-- Select Product Condition --</option>
                                 <option value="weak">Weak</option>
                                 <option value="moderate">Moderate</option>
                                 <option value="excellent">Excellent</option>
@@ -269,8 +269,8 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                                         }, 2550);
                                         swal({
                                             type: 'success',
-                                            title: 'New Invoice Created!',
-                                            text: 'New Invoice has been successfully created!',
+                                            title: 'Product Diagnosis Finalized!',
+                                            text: 'The product has been successfully diagnosed!',
                                             showConfirmButton: false,
                                             timer: 2500
                                         });
@@ -297,8 +297,8 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                                     }, 2550);
                                     swal({
                                         type: 'success',
-                                        title: 'New Invoice Created!',
-                                        text: 'New Invoice has been successfully created!',
+                                        title: 'Product Diagnosis Finalized!',
+                                        text: 'The product has been successfully diagnosed!',
                                         showConfirmButton: false,
                                         timer: 2500
                                     });

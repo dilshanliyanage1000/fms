@@ -16,35 +16,67 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
     </div>
 
     <div class="col-md-12">
-        <div class="jumbotron">
-            <h1 class="display-5" style="text-align: center;"><i class="fas fa-chart-bar"></i>&nbsp;&nbsp;Sales Report</h1>
-            <p class="lead" style="text-align: center;">Generate Sales report based on the selected time frame</p>
-            <hr class="my-4">
-            <br>
-
-            <!-- attendance marking form -->
-            <h5>Please select the time-period to generate the sales report</h5>
-            <br><br>
-            <form id="sales_form">
-                <div class="row form-group">
-                    <div class="col-md-3"></div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="control-label">Select Date Period :</label>
-                            <div id="reportrange" class="form-control" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%;">
-                                <i class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span></span>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-caret-down"></i>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="jumbotron">
+                    <h2 class="display-5" style="text-align: center;"><i class="fas fa-chart-bar"></i>&nbsp;&nbsp;Sales Report</h2>
+                    <p class="lead" style="text-align: center;">Generate Sales report based on the selected time frame</p>
+                    <hr class="my-4">
+                    <br>
+                    <!-- attendance marking form -->
+                    <h6 style="text-align: center;">Please select the time-period to generate the sales report</h6>
+                    <br><br>
+                    <form id="sales_form">
+                        <div class="row form-group">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Select Date Period :</label>
+                                    <div id="reportrange" class="form-control" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%;">
+                                        <i class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span></span>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-caret-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <button type="button" id="gen_sales" class="btn btn-primary btn-block" style="margin-top: 32px;"><i class="fas fa-paper-plane"></i>&nbsp;&nbsp;Generate Sales Report</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <button type="button" id="gen_sales" class="btn btn-primary" style="margin-top: 32px;"><i class="fas fa-paper-plane"></i>&nbsp;&nbsp;Generate Sales</button>
-                        </div>
-                    </div>
+                        <div id="load_content"></div>
+                    </form>
                 </div>
-                <div id="load_content"></div>
-            </form>
+            </div>
+            <div class="col-md-6">
+                <div class="jumbotron">
+                    <h2 class="display-5" style="text-align: center;"><i class="fas fa-boxes"></i>&nbsp;&nbsp;Most-Selling Products Report</h2>
+                    <p class="lead" style="text-align: center;">Generate products report based on the selected time frame or products</p>
+                    <hr class="my-4">
+                    <br>
+                    <!-- attendance marking form -->
+                    <h6 style="text-align: center;">Please select the time-period to generate the sales report</h6>
+                    <br><br>
+                    <form id="sales_form">
+                        <div class="row form-group">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Select Date Period :</label>
+                                    <div id="products_sales_range" class="form-control" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%;">
+                                        <i class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;<span></span>&nbsp;&nbsp;&nbsp;<i class="fa fa-caret-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <button type="button" id="gen_prods" class="btn btn-primary btn-block" style="margin-top: 32px;"><i class="fas fa-paper-plane"></i>&nbsp;&nbsp;Generate Products Report</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="load_content"></div>
+                    </form>
+                </div>
+            </div>
         </div>
+
     </div>
 
     <script>
@@ -91,6 +123,55 @@ if (isset($_SESSION['userId']) && ($_SESSION['user_role'] == 1 || $_SESSION['use
                     swal("Invalid Time Period", "Please select a valid date period", "warning");
                 } else {
                     window.open("./custom_sales_report.php?startDate=" + startDate + "&endDate=" + endDate + "&/", "_blank");
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+
+            var startDate = '';
+            var endDate = '';
+
+            $(function() {
+
+                var start = moment().subtract(29, 'days');
+                var end = moment();
+
+                function cb(start, end) {
+                    $('#products_sales_range span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                    startDate = start.format('YYYY-MM-DD');
+                    endDate = end.format('YYYY-MM-DD');
+                }
+
+                $('#products_sales_range').daterangepicker({
+                    startDate: start,
+                    endDate: end,
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    }
+                }, cb);
+
+                cb(start, end);
+            });
+
+            $("#gen_prods").click(function() {
+
+                var today_date = "<?php
+                                    date_default_timezone_set('Asia/Colombo');
+                                    echo date("Y-m-d");
+                                    ?>";
+
+                if (startDate > today_date || endDate > today_date) {
+                    swal("Invalid Time Period", "Please select a valid date period", "warning");
+                } else {
+                    window.open("./custom_most_sold_products_report.php?startDate=" + startDate + "&endDate=" + endDate + "&/", "_blank");
                 }
             });
         });

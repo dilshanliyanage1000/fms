@@ -113,11 +113,11 @@ if (isset($_SESSION['userId']) && $_SESSION['user_role'] == 2) {
                 <div class="row">
                     <div class="col-md-6">
                         <div class="shadow h-100" style="border-radius: 15px; padding: 25px; background-color: #fff; margin: 5px;">
-                            <h4 style="text-align: center; color: #e3a700;"><i class="fas fa-cogs"></i>&nbsp;&nbsp;TOP SELLING MACHINERIES</h4>
+                            <h4 style="text-align: center; color: #e3a700;"><i class="fas fa-file-alt"></i>&nbsp;&nbsp;LOYAL CUSTOMERS</h4>
                             <div style="margin-top: 30px;">
                                 <?php
-                                include_once("../../functions/sales.php");
-                                getMostSelling();
+                                include_once("../../functions/stock.php");
+                                getTopCustomerbyInvoiceCount();
                                 ?>
                             </div>
                         </div>

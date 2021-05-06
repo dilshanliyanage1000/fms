@@ -494,8 +494,43 @@ function RMLoweringStocks()
 }
 
 
-function getTopCustomer()
+function getTopCustomerbyInvoiceCount()
 {
+    $conn = Connection();
 
+    $invoiceCount = '';
+
+    $getSQL = "SELECT invoice_tbl.cus_id, cus_tbl.cus_first_name, cus_tbl.cus_last_name, SUM(invoice_tbl.inv_final_price) as total_sum, COUNT(inv_id) as invoice_count
+                FROM invoice_tbl
+                INNER JOIN cus_tbl
+                ON invoice_tbl.cus_id = cus_tbl.cus_id
+                GROUP BY invoice_tbl.cus_id  
+                ORDER BY invoice_count DESC
+                LIMIT 5";
+
+    $runSQL = mysqli_query($conn, $getSQL);
+
+    $nor = mysqli_num_rows($runSQL);
+
+    if ($nor > 0) {
+
+        $counter = 1;
+
+        while ($rec = mysqli_fetch_assoc($runSQL)) {
+
+            $invoiceCount .= "<div id='zoom' class='row shadow h-100' style='border: 1px solid #f2f2f2; border-radius: 30px; padding: 10px; background-color: white; margin: 13px;'>
+                                    <div class='col-md-12' style='margin-top: 5px;'>
+                                        <div class='row'>
+                                            <img src='../../../img/list_digits/" . $counter . ".png' style='height: 25px; text-align: left; margin-left: 10px; margin-right: 15px;' alt='Number_One'>|<h6 style='margin-left: 10px; margin-top: 5px;'>&nbsp;&nbsp;" . $rec['cus_first_name'] . " " . $rec['cus_last_name'] . "  -  " . $rec['invoice_count'] . " invoices | Rs. " . number_format($rec['total_sum']) . ".00</h6>
+                                        </div>
+                                    </div>
+                                </div>";
+
+            $counter++;
+        }
+
+        echo ($invoiceCount);
+    } else {
+        return ("no records found!");
+    }
 }
-?>

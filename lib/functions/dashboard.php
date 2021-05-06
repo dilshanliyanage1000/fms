@@ -4,8 +4,6 @@ date_default_timezone_set('Asia/Colombo');
 
 include_once('db_conn.php');
 
-include_once('id_maker.php');
-
 function AnnualEarnings()
 {
     $thisyear = date("Y");
@@ -16,6 +14,7 @@ function AnnualEarnings()
 
     $conn = Connection();
 
+    //get the total sum of invoices in the given time frame
     $getAE = "SELECT SUM(invoice_tbl.inv_final_price) AS TotalAnnualSales
                 FROM invoice_tbl
                 WHERE invoice_tbl.inv_date BETWEEN '$yearstart' AND '$yearend';";
@@ -41,6 +40,7 @@ function MonthlyEarnings()
 
     $conn = Connection();
 
+    //get the total sum of invoices in the given time frame
     $getAE = "SELECT SUM(invoice_tbl.inv_final_price) AS TotalAnnualSales
                 FROM invoice_tbl
                 WHERE invoice_tbl.inv_date BETWEEN '$monthstart' AND '$monthend';";

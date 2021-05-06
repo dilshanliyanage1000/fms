@@ -49,6 +49,8 @@ function SearchEmp($search)
             </tr>
         ';
 
+        //employee output format in a table like view
+
         while ($rec = mysqli_fetch_assoc($searchQuery)) {
             $output .= '
                 <tr>
@@ -72,6 +74,7 @@ function EmpData($empId)
     // call the connection
     $conn = Connection();
 
+    //selecting all current employees of the company
     $selectEmp = "SELECT * FROM emp_tbl WHERE emp_id = '$empId' AND emp_status = 1;";
 
     $empResult = mysqli_query($conn, $selectEmp);
@@ -113,9 +116,14 @@ function markAttendance($id)
 
     if ($nor > 0) {
         while ($rec = mysqli_fetch_assoc($search_result)) {
+
+            //if the employee is already at the industry/ marked attendance
+
             if ($rec['attendance_status'] == 1) {
 
                 $payroll_id = Auto_id('payroll_id', 'emp_payroll_tbl', 'PAY');
+
+                //insert the second timestamp on the final card punch
 
                 $updateAttendance = "UPDATE attendance_tbl
                                         SET attendance_status = 0,
@@ -125,6 +133,8 @@ function markAttendance($id)
                                         LIMIT 1;";
 
                 $search_res = mysqli_query($conn, $updateAttendance);
+
+                //calculate the difference between the entered time and the exited time, and insert the difference in minutes to the payroll table
 
                 $calHoursSql = "SELECT TIMESTAMPDIFF(MINUTE, attendance_timestamp_one, attendance_timestamp_two) AS timediff, attendance_id
                                     FROM attendance_tbl
@@ -146,11 +156,15 @@ function markAttendance($id)
                 $insert_res = mysqli_query($conn, $addPayroll);
 
                 if ($insert_res > 0) {
+
+                    //display logged out status
                     return ("loggedout");
                 } else {
                     return false;
                 }
             } else {
+
+                //if the user enter the industry as of right now, then mark new attendace for the day
 
                 $updateAttendance = "INSERT INTO attendance_tbl(attendance_id,emp_id,attendance_date,attendance_status)
                                         VALUES ('$auto_id','$id','$today',1);";
@@ -166,6 +180,8 @@ function markAttendance($id)
         }
     } else {
 
+
+
         $updateAttendance = "INSERT INTO attendance_tbl(attendance_id,emp_id,attendance_date,attendance_status)
                                 VALUES ('$auto_id','$id','$today',1);";
 
@@ -179,6 +195,8 @@ function markAttendance($id)
     }
 };
 
+// get employee work hours with the employee ID and the month
+
 function getWHours($empId, $monthyear)
 {
     $month_w_year = explode("-", $monthyear);
@@ -188,6 +206,8 @@ function getWHours($empId, $monthyear)
     $enddate = $month_w_year[1] . '-' . $month_w_year[0] . '-31';
 
     $conn = Connection();
+
+    //query with 2 table joins to get the total worked time in minutes
 
     $getWH = "SELECT emp_tbl.emp_id, emp_jobrole_tbl.jobrole_name, emp_jobrole_tbl.jobrole_basicsal, emp_jobrole_tbl.jobrole_maxsal, SUM(emp_payroll_tbl.tot_work_mins) AS tot_hrs
                 FROM ((emp_tbl
@@ -206,6 +226,7 @@ function getWHours($empId, $monthyear)
     return (json_encode($rec));
 };
 
+//creating a salary report
 function addtoSalaryReport($employeeID, $monthandyear, $empTotWorkhours, $empWorkHours, $empCurrentSal, $empOTHours, $empOTSalary, $FinalWorkSal, $FinalOTSal, $FinalSalarySum)
 {
     if (empty($employeeID) or empty($monthandyear) or empty($empTotWorkhours) or empty($empWorkHours) or empty($empCurrentSal) or empty($empOTHours) or empty($empOTSalary) or empty($FinalWorkSal) or empty($FinalOTSal) or empty($FinalSalarySum)) {
@@ -218,8 +239,10 @@ function addtoSalaryReport($employeeID, $monthandyear, $empTotWorkhours, $empWor
 
     $propermonth = $bstring[1] . '-' . $bstring[0];
 
+    //creating an ID
     $id = Auto_id("sal_id", "emp_salary_tbl", "ESL");
 
+    // inserting the calculated salary with the employee ID 
     $insertSQL = "INSERT INTO emp_salary_tbl(sal_id,emp_id,sal_month,sal_totwork_hrs,sal_work_hrs,sal_current_sal,sal_otwork_hrs,sal_ot_sal,sal_currentpay,sal_otpay,sal_totmonthsal,sal_status)
                     VALUES('$id', '$employeeID', '$propermonth', '$empTotWorkhours', '$empWorkHours', '$empCurrentSal', '$empOTHours', '$empOTSalary', '$FinalWorkSal', '$FinalOTSal', '$FinalSalarySum',1);";
 
@@ -232,6 +255,7 @@ function addtoSalaryReport($employeeID, $monthandyear, $empTotWorkhours, $empWor
     }
 }
 
+// updating the salary table with the created salary report
 function addSalaryPDF($id, $path)
 {
     $conn = Connection();
@@ -247,6 +271,8 @@ function addSalaryPDF($id, $path)
     }
 }
 
+
+//get the list of all the salary sheets
 function SalarySheets()
 {
     // call the connection
@@ -282,6 +308,7 @@ function SalarySheets()
     }
 }
 
+// validating whther the employee has the salary created for the given month
 function SalaryReportValidation($id, $monthdate)
 {
     $conn = Connection();
@@ -290,6 +317,7 @@ function SalaryReportValidation($id, $monthdate)
 
     $sendDate = $monthdate[1] . '-' . $monthdate[0];
 
+    //query to identify whther a salary report exists
     $searchSQL = "SELECT * FROM emp_salary_tbl WHERE emp_id = '$id' AND sal_month = '$sendDate';";
 
     $runSQL = mysqli_query($conn, $searchSQL);

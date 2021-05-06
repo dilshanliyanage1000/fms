@@ -109,6 +109,17 @@
                         </div>
                     </li>
                     <hr>
+                    <li class="item" id="order_management">
+                        <a href="#order_management" class="menu-btn" id="textzoom">
+                            <i class="fas fa-cash-register"></i><span>Order Management<i class="fas fa-chevron-down drop-down"></i></span>
+                        </a>
+                        <div class="sub-menu">
+                            <a href="../grn/grn_list.php"><i class="fas fa-file-alt"></i><span>G.R. Notes List</span></a>
+                            <a href="../purchase_order/po_list.php"><i class="fas fa-file-powerpoint"></i><span>Purchase Orders</span></a>
+                            <a href="../invoice/invoice_list.php"><i class="fas fa-file-invoice"></i><span>Invoice Management</span></a>
+                            <a href="../stock/stock.php"><i class="fas fa-chart-bar"></i><span>Stock Management</span></a>
+                        </div>
+                    </li>
                     <li class="item">
                         <a href="../sales/sales.php" class="menu-btn" id="textzoom">
                             <i class="fas fa-chart-bar"></i><span>Company Sales</span>
@@ -149,17 +160,6 @@
                         </a>
                         <div class="sub-menu">
                             <a href="../request_notes/allrequests.php"><i class="far fa-question-circle"></i><span>All Requests</span></a>
-                        </div>
-                    </li>
-                    <li class="item" id="order_management">
-                        <a href="#order_management" class="menu-btn" id="textzoom">
-                            <i class="fas fa-cash-register"></i><span>Order Management<i class="fas fa-chevron-down drop-down"></i></span>
-                        </a>
-                        <div class="sub-menu">
-                            <a href="../grn/grn_list.php"><i class="fas fa-file-alt"></i><span>G.R. Notes List</span></a>
-                            <a href="../purchase_order/po_list.php"><i class="fas fa-file-powerpoint"></i><span>Purchase Orders</span></a>
-                            <a href="../invoice/invoice_list.php"><i class="fas fa-file-invoice"></i><span>Invoice Management</span></a>
-                            <a href="../stock/stock.php"><i class="fas fa-chart-bar"></i><span>Stock Management</span></a>
                         </div>
                     </li>
                     <li class="item" id="update_production">
